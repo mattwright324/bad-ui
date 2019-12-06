@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Bad Interface</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/moment.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="one-third column" style="margin-top: 5%">
+            <h3>About</h3>
+            <p>
+                A collection of purposefully bad user interface implementations.
+                Inspired by posts on <a href="https://www.reddit.com/r/badUIbattles/">r/badUIbattles</a>.
+                Now you can suffer by being able to use them!
+            </p>
+            <p>
+                <a href="https://github.com/mattwright324/bad-ui">Fork me on GitHub</a>
+            </p>
+            <h4>Bad</h4>
+            <ul>
+                <li><a href="#date">Date inputs</a></li>
+                <li><a href="#password">Password inputs</a></li>
+                <li><a href="#phone">Phone inputs</a></li>
+            </ul>
+        </div>
+        <div class="two-thirds column" style="margin-top: 5%">
+            <h3 id="date">Bad Date</h3>
+
+            <div class="column">
+                <h5>All the years</h5>
+                <p>
+                    Please enter your birthdate.
+                </p>
+                <div class="row">
+                    <div class="two columns">
+                        <label>Day</label>
+                        <select class="u-full-width">
+                            <script>
+                                for(let i=1; i<=31; i++) {
+                                    document.write("<option value='" + i + "'>" + i + "</option>")
+                                }
+                            </script>
+                        </select>
+                    </div>
+                    <div class="three columns">
+                        <label>Month</label>
+                        <select class="u-full-width">
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+                    <div class="three columns">
+                        <label>Year</label>
+                        <select class="u-full-width">
+                            <script>
+                                for(let i=-9999; i<=9999; i++) {
+                                    document.write("<option value='" + i + "'>" + Math.abs(i) + (i < 0 ? " b.c." : "") + "</option>")
+                                }
+                            </script>
+                        </select>
+                    </div>
+                </div>
+                <hr>
+            </div>
+
+            <div class="column">
+                <h5>Index of π</h5>
+                <p>
+                    At what index of PI can we find your birthdate?
+                </p>
+                <p>
+                    <button id="piLoadDigits" class="button-primary">Load a million digits (1MB)</button>
+                </p>
+                <div class="row">
+                    <div class="three columns">
+                        <label>Index</label>
+                        <input id="indexOfPi" class="u-full-width" type="number" name="quantity" min="0" value="0" max="1000000" disabled>
+
+                    </div>
+                    <div class="nine columns">
+                        <label>Birthday</label>
+                        <input id="piDate" class="four" type="text" value="..." disabled>
+                        <label id="piDateStatus" style="color:red"></label>
+                    </div>
+                    <script>
+                        (function() {
+                            'use strict';
+                            const btnLoadDigits = $("#piLoadDigits");
+                            const inputIndex = $("#indexOfPi");
+                            const outputDate = $("#piDate");
+                            const outputDateStatus = $("#piDateStatus");
+
+                            // Load digits of PI
+                            let pi = Math.PI.toString();
+                            btnLoadDigits.on('click', function() {
+                                btnLoadDigits.hide();
+                                $.ajax({
+                                    url: "data/pi_dec_1m.txt"
+                                }).done(function(res) {
+                                    pi = res;
+
+                                    inputIndex.removeAttr("disabled");
+                                    inputIndex.attr("max", pi.length - 8);
+                                    findDate();
+                                });
+                            });
+
+                            function findDate() {
+                                const index = Number(inputIndex.val());
+                                const value = pi.substr(index, 8);
+
+                                const year = value.substr(0, 4);
+                                const month = value.substr(4, 2);
+                                const day = value.substr(6, 2);
+                                const dateString = year + "-" + month + "-" + day;
+
+                                outputDate.val(dateString);
+
+                                const date = new Date(dateString);
+
+                                if (isNaN(date)) {
+                                    outputDateStatus.text("Whoops, that's not a valid date. Try again.");
+                                    outputDate.css("border", "solid 1px red")
+                                } else {
+                                    outputDateStatus.text("");
+                                    outputDate.css("border", "solid 1px green")
+                                }
+                            }
+                            inputIndex.change(findDate);
+                        })();
+                    </script>
+                </div>
+                <p>
+                    <small>
+                        <a href="https://www.reddit.com/r/badUIbattles/comments/dyj2yq/best_way_to_enter_your_birthday/">
+                            Best way to enter your birthday
+                        </a>
+                    </small>
+                    <br>
+                    <small>
+                        <a href="https://pi2e.ch/blog/2017/03/10/pi-digits-download/#download">
+                            PI digits download
+                        </a>
+                    </small>
+                </p>
+                <hr>
+            </div>
+
+            <div class="column">
+                <h5>Random date</h5>
+                <p>
+                    Is this your birthdate? How about this one? No...?
+                </p>
+                <div class="row">
+                    <div class="four columns">
+                        <label>Birthday</label>
+                        <input id="randomDate" class="u-full-width" type="text" value="..." disabled>
+                    </div>
+                    <div class="eight columns">
+                        <label>&nbsp;</label>
+                        <input id="yourAge" class="u-full-width" type="text" style="border:none" disabled>
+                    </div>
+                    <button id="nextDate" class="button-primary">Next</button>
+                </div>
+                <script>
+                    (function() {
+                        'use strict';
+
+                        const outputRandomDate = $("#randomDate");
+                        const btnRandomDate = $("#nextDate");
+                        const yourAge = $("#yourAge");
+
+                        function random(number) {
+                            return Math.floor(Math.random() * number);
+                        }
+                        function nextDate() {
+                            let year = random(9999);
+                            let month = random(12);
+                            let day = random(31);
+
+                            if(month < 10) {
+                                month = "0" + month;
+                            }
+                            if(day < 10) {
+                                day = "0" + day;
+                            }
+                            while(String(year).length < 4) {
+                                year = "0" + year;
+                            }
+
+                            const dateString = year + "-" + month + "-" + day;
+                            const date = new Date(dateString);
+
+                            if(isNaN(date)) {
+                                // Not valid, try again
+                                nextDate();
+                            } else {
+                                const now = moment(new Date());
+                                const years = now.diff(date, 'year');
+
+                                outputRandomDate.val(dateString);
+
+                                if(now.isBefore(date)) {
+                                    yourAge.val("You haven't been born yet!");
+                                } else {
+                                    yourAge.val("You're " + years + " years old!")
+                                }
+                            }
+                        }
+                        btnRandomDate.on('click', nextDate);
+                        nextDate();
+                    })();
+                </script>
+                <hr>
+            </div>
+
+            <h3 id="password">Bad Password</h3>
+
+
+            <h3 id="phone">Bad Phone</h3>
+
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
