@@ -12,9 +12,11 @@ layout: null
     <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/dice-1.0.min.css">
     <link rel="icon" type="image/png" href="favicon.png">
 
     <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
     <script src="js/moment.min.js"></script>
 </head>
 <body>
@@ -47,7 +49,7 @@ layout: null
                 <div class="row">
                     <div class="two columns">
                         <label>Day</label>
-                        <select class="u-full-width">
+                        <select id="daySelect" class="u-full-width">
                             <script>
                                 for(let i=1; i<=31; i++) {
                                     document.write("<option value='" + i + "'>" + i + "</option>")
@@ -57,7 +59,7 @@ layout: null
                     </div>
                     <div class="three columns">
                         <label>Month</label>
-                        <select class="u-full-width">
+                        <select id="monthSelect" class="u-full-width">
                             <option value="1">January</option>
                             <option value="2">February</option>
                             <option value="3">March</option>
@@ -86,6 +88,16 @@ layout: null
                 <p>
                     Dropdown is slow to load in Firefox.
                 </p>
+                <script>
+                    function randomizeChildren(element) {
+                        $(element+">").map(function (i, t) {
+                            let s = $(t).siblings();
+                            s.eq(Math.round(s.length * Math.random())).after(t)
+                        })
+                    }
+                    randomizeChildren("#daySelect");
+                    randomizeChildren("#monthSelect");
+                </script>
                 <hr>
             </div>
 
@@ -101,7 +113,6 @@ layout: null
                     <div class="three columns">
                         <label>Index</label>
                         <input id="indexOfPi" class="u-full-width" type="number" name="quantity" min="0" value="0" max="1000000" disabled>
-
                     </div>
                     <div class="nine columns">
                         <label>Birthday</label>
@@ -152,7 +163,7 @@ layout: null
                                     outputDate.css("border", "solid 1px green")
                                 }
                             }
-                            inputIndex.change(findDate);
+                            inputIndex.on('change input', findDate);
                         })();
                     </script>
                 </div>
@@ -241,44 +252,6 @@ layout: null
             </div>
 
             <div class="column">
-                <h5>Date Slider</h5>
-                <p>
-                    How precise is your mouse?
-                </p>
-                <div class="row">
-                    <div class="four columns">
-                        <label>Birthday</label>
-                        <input id="dateSlider" class="u-full-width" type="range">
-                    </div>
-                    <div class="eight columns">
-                        <label>&nbsp;</label>
-                        <input id="sliderValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
-                    </div>
-                </div>
-                <script>
-                    // Script if need
-                    (function() {
-                        'use strict';
-                        const inputDateSlider = $("#dateSlider");
-                        const outputSliderValue = $("#sliderValue");
-
-                        inputDateSlider.attr("min", Number(new Date("1900-01-01")));
-                        inputDateSlider.attr("max", Number(new Date()));
-
-                        function determineDate() {
-                            const millis = Number(inputDateSlider.val());
-                            const date = new Date(millis);
-
-                            outputSliderValue.val(moment(date).format("YYYY-MM-DD"))
-                        }
-                        inputDateSlider.on('change mousemove', determineDate);
-                        determineDate();
-                    })()
-                </script>
-                <hr>
-            </div>
-
-            <div class="column">
                 <h5>Day Adder</h5>
                 <p>
                     That's it, just days.
@@ -313,6 +286,44 @@ layout: null
                             updateDay();
                         });
                         updateDay();
+                    })()
+                </script>
+                <hr>
+            </div>
+
+            <div class="column">
+                <h5>Date Slider</h5>
+                <p>
+                    How precise is your mouse?
+                </p>
+                <div class="row">
+                    <div class="four columns">
+                        <label>Birthday</label>
+                        <input id="dateSlider" class="u-full-width" type="range">
+                    </div>
+                    <div class="eight columns">
+                        <label>&nbsp;</label>
+                        <input id="sliderValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
+                    </div>
+                </div>
+                <script>
+                    // Script if need
+                    (function() {
+                        'use strict';
+                        const inputDateSlider = $("#dateSlider");
+                        const outputSliderValue = $("#sliderValue");
+
+                        inputDateSlider.attr("min", Number(new Date("1900-01-01")));
+                        inputDateSlider.attr("max", Number(new Date()));
+
+                        function determineDate() {
+                            const millis = Number(inputDateSlider.val());
+                            const date = new Date(millis);
+
+                            outputSliderValue.val(moment(date).format("YYYY-MM-DD"))
+                        }
+                        inputDateSlider.on('change mousemove', determineDate);
+                        determineDate();
                     })()
                 </script>
                 <hr>
@@ -386,6 +397,104 @@ layout: null
                 <hr>
             </div>
 
+            <div class="column">
+                <h5>Roll the Date</h5>
+                <p>
+                    Shake as best you can!
+                </p>
+                <div class="row">
+                    <div class="four columns">
+                        <label>Birthday</label>
+                        <input id="rolledDate" class="u-full-width" type="text" value="1970-01-01" style="border:none" disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <span id="firstDice" class="dice dice-1" title="Dice 1" data-value="1"></span>
+                    <span id="secondDice" class="dice dice-2" title="Dice 2" data-value="2"></span>
+                    <style>
+                        .dice {
+                            font-size: 2.5em;
+                            margin-right: 5px;
+                            display: inline-block;
+                        }
+                    </style>
+                </div>
+                <div class="row">
+                    <div class="three columns">
+                        <label>Unit</label>
+                        <select id="unitSelect" class="u-full-width">
+                            <option value="years" selected>Year</option>
+                            <option value="months">Month</option>
+                            <option value="days">Day</option>
+                        </select>
+                    </div>
+                    <div class="nine columns">
+                        <label>&nbsp;</label>
+                        <div class="row">
+                            <button id="rollMinus" class="button-primary">Roll and Minus</button>
+                            <button id="rollAdd" class="button-primary">Roll and Add</button>
+                        </div>
+                    </div>
+
+                </div>
+                <script>
+                    // Script if need
+                    (function() {
+                        'use strict';
+
+                        const dice = ["dice-1", "dice-2", "dice-3", "dice-4", "dice-5", "dice-6"];
+                        const outputRolledDate = $("#rolledDate");
+                        const selectUnit = $("#unitSelect");
+                        const btnRollMinus = $("#rollMinus");
+                        const btnRollAdd = $("#rollAdd");
+                        const firstDice = $("#firstDice");
+                        const secondDice = $("#secondDice");
+
+                        function setDiceClass(element, dieIndex) {
+                            dieIndex = Math.trunc(dieIndex);
+                            for(let i=0; i<dice.length; i++) {
+                                element.removeClass(dice[i]);
+                            }
+                            element.effect("shake", {}, 500);
+                            element.addClass(dice[dieIndex]);
+                            element.data("value", dieIndex+1)
+                        }
+
+                        function roll(time, times, callback) {
+                            console.log(time);
+                            if(time < times) {
+                                const firstIndex = Math.random() * dice.length;
+                                const secondIndex = Math.random() * dice.length;
+
+                                setDiceClass(firstDice, firstIndex);
+                                setDiceClass(secondDice, secondIndex);
+
+                                setTimeout(function() {
+                                    roll(time+1, times, callback);
+                                }, 500);
+                            } else {
+                                callback();
+                            }
+                        }
+
+                        function doRoll(state) {
+                            roll(0, 3, function() {
+                                const first = firstDice.data("value");
+                                const second = secondDice.data("value");
+                                const amount = (first + second) * state;
+                                const unit = selectUnit.find(":selected").val();
+                                const currentDate = moment(new Date(outputRolledDate.val()));
+
+                                outputRolledDate.val(currentDate.add(amount, unit).format("YYYY-MM-DD"));
+                            });
+                        }
+                        btnRollMinus.on('click', function(){doRoll(-1)});
+                        btnRollAdd.on('click', function(){doRoll(1)});
+                    })()
+                </script>
+                <hr>
+            </div>
+
             <h3 id="password">Bad Password</h3>
 
             <div class="column">
@@ -411,9 +520,28 @@ layout: null
                 </p>
                 <script>
                     // Script if need
+                    (function() {
+                        'use strict';
+                    })()
                 </script>
                 <hr>
             </div>
+
+            <!--
+            <div class="column">
+                <h5>Title</h5>
+                <p>
+                    Message
+                </p>
+                <script>
+                    // Script if need
+                    (function() {
+                        'use strict';
+                    })()
+                </script>
+                <hr>
+            </div>
+            -->
         </div>
     </div>
 </div>
