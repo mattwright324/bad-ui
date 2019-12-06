@@ -25,7 +25,6 @@ layout:null
             <p>
                 A collection of purposefully bad user interface implementations.
                 Inspired by posts on <a href="https://www.reddit.com/r/badUIbattles/">r/badUIbattles</a>.
-                Now you can suffer by being able to use them!
             </p>
             <p>
                 <a href="https://github.com/mattwright324/bad-ui">Fork me on GitHub</a>
@@ -84,6 +83,9 @@ layout:null
                         </select>
                     </div>
                 </div>
+                <p>
+                    Dropdown is slow to load in Firefox.
+                </p>
                 <hr>
             </div>
 
@@ -173,7 +175,7 @@ layout:null
             <div class="column">
                 <h5>Random date</h5>
                 <p>
-                    Is this your birthdate? How about this one? No...?
+                    Is this your birthdate?
                 </p>
                 <div class="row">
                     <div class="four columns">
@@ -238,12 +240,180 @@ layout:null
                 <hr>
             </div>
 
+            <div class="column">
+                <h5>Date Slider</h5>
+                <p>
+                    How precise is your mouse?
+                </p>
+                <div class="row">
+                    <div class="four columns">
+                        <label>Birthday</label>
+                        <input id="dateSlider" class="u-full-width" type="range">
+                    </div>
+                    <div class="eight columns">
+                        <label>&nbsp;</label>
+                        <input id="sliderValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
+                    </div>
+                </div>
+                <script>
+                    // Script if need
+                    (function() {
+                        'use strict';
+                        const inputDateSlider = $("#dateSlider");
+                        const outputSliderValue = $("#sliderValue");
+
+                        inputDateSlider.attr("min", Number(new Date("1900-01-01")));
+                        inputDateSlider.attr("max", Number(new Date()));
+
+                        function determineDate() {
+                            const millis = Number(inputDateSlider.val());
+                            const date = new Date(millis);
+
+                            outputSliderValue.val(moment(date).format("YYYY-MM-DD"))
+                        }
+                        inputDateSlider.on('change mousemove', determineDate);
+                        determineDate();
+                    })()
+                </script>
+                <hr>
+            </div>
+
+            <div class="column">
+                <h5>Day Adder</h5>
+                <p>
+                    That's it, just days.
+                </p>
+                <div class="row">
+                    <div class="four columns">
+                        <label>Birthday</label>
+                        <input id="dateAdderValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
+                    </div>
+                </div>
+                <button id="minusDay" class="button-primary">-1 Day</button>
+                <button id="plusDay" class="button-primary">+1 Day</button>
+                <script>
+                    // Script if need
+                    (function() {
+                        'use strict';
+                        const dateAdderValue = $("#dateAdderValue");
+                        const btnMinusDay = $("#minusDay");
+                        const btnPlusDay = $("#plusDay");
+
+                        let date = moment(new Date("1970-01-01"));
+                        function updateDay() {
+                            dateAdderValue.val(date.format("YYYY-MM-DD"))
+                        }
+
+                        btnMinusDay.on('click', function() {
+                            date = date.add(-1, "days");
+                            updateDay();
+                        });
+                        btnPlusDay.on('click', function() {
+                            date = date.add(1, "days");
+                            updateDay();
+                        });
+                        updateDay();
+                    })()
+                </script>
+                <hr>
+            </div>
+
+            <div class="column">
+                <h5>Boomerang</h5>
+                <p>
+                    Time your choice.
+                </p>
+                <div class="row">
+                    <div class="four columns">
+                        <label>Birthday</label>
+                        <input id="boomerangSlider" class="u-full-width" type="range" disabled>
+                    </div>
+                    <div class="eight columns">
+                        <label>&nbsp;</label>
+                        <input id="boomerangValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
+                    </div>
+                </div>
+                <p id="boomerangPickValue">
+                    You haven't picked a date yet.
+                </p>
+                <button id="boomerangPick" class="button-primary">Pick</button>
+                <script>
+                    // Script if need
+                    (function() {
+                        'use strict';
+                        const inputBoomerangSlider = $("#boomerangSlider");
+                        const outputSliderValue = $("#boomerangValue");
+                        const btnBoomerangPick = $("#boomerangPick");
+                        const outputBoomerangPickValue = $("#boomerangPickValue");
+
+                        inputBoomerangSlider.attr("min", Number(new Date("1900-01-01")));
+                        inputBoomerangSlider.attr("max", Number(new Date()));
+
+                        function getSliderDate() {
+                            const millis = Number(inputBoomerangSlider.val());
+                            const date = new Date(millis);
+                            return moment(date).format("YYYY-MM-DD");
+                        }
+
+                        function determineDate() {
+                            outputSliderValue.val(getSliderDate())
+                        }
+                        inputBoomerangSlider.on('change mousemove', determineDate);
+                        determineDate();
+
+                        btnBoomerangPick.on('click', function() {
+                            outputBoomerangPickValue.text("You're birthday is " + getSliderDate())
+                        });
+
+                        let addDays = 10;
+                        setInterval(function() {
+                            const min = moment(new Date(Number(inputBoomerangSlider.attr("min"))));
+                            const max = moment(new Date(Number(inputBoomerangSlider.attr("max"))));
+                            const value = moment(new Date(Number(inputBoomerangSlider.val())));
+
+                            const nextValue = value.add(Math.random() * addDays, 'days');
+                            if (nextValue.isSame(max) || nextValue.isAfter(max)) {
+                                addDays = -10;
+                            } else if(nextValue.isSame(min) || nextValue.isBefore(min)) {
+                                addDays = 10;
+                            }
+
+                            inputBoomerangSlider.val(nextValue.valueOf());
+                            determineDate();
+                        }, 2);
+                    })()
+                </script>
+                <hr>
+            </div>
+
             <h3 id="password">Bad Password</h3>
 
+            <div class="column">
+                <h5>Title</h5>
+                <p>
+                    Message
+                </p>
+                <script>
+                    // Script if need
+                    (function() {
+                        'use strict';
+                    })()
+                </script>
+                <hr>
+            </div>
 
             <h3 id="phone">Bad Phone</h3>
 
-
+            <div class="column">
+                <h5>Title</h5>
+                <p>
+                    Message
+                </p>
+                <script>
+                    // Script if need
+                </script>
+                <hr>
+            </div>
         </div>
     </div>
 </div>
