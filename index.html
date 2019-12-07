@@ -43,28 +43,30 @@ layout: null
             </p>
             <h4>Bad</h4>
             <ul>
-                <li><a href="#date">Date inputs</a>
+                <li><a href="#bad-date">Date inputs</a>
                     <ul>
                         <li><a href="#all-the-years">All the years</a></li>
                         <li><a href="#index-of-pi">Index of π</a></li>
                         <li><a href="#random-date">Random date</a></li>
                         <li><a href="#day-adder">Day Adder</a></li>
                         <li><a href="#date-slider">Date Slider</a></li>
-                        <li><a href="#boomerang">Boomerang</a></li>
+                        <li><a href="#boomerang">Date Boomerang</a></li>
                         <li><a href="#roll-the-date">Roll the Date</a></li>
                     </ul>
                 </li>
                 <!--<li><a href="#logins">Login forms</a></li>-->
-                <li><a href="#phone">Phone inputs</a>
+                <li><a href="#bad-phone">Phone inputs</a>
                     <ul>
                         <li><a href="#random-phone">Random Phone</a></li>
+                        <li><a href="#phone-slider">Phone Slider</a></li>
+                        <li><a href="#boomerang-phone">Phone Boomerang</a></li>
                     </ul>
                 </li>
                 <!--<li><a href="#volume">Volume inputs</a></li>-->
             </ul>
         </div>
         <div class="two-thirds column" style="margin-top: 5%">
-            <h3 id="date">Bad Date</h3>
+            <h3 id="bad-date">Bad Date</h3>
 
             <div class="column">
                 <h5 id="all-the-years">All the years</h5>
@@ -359,7 +361,7 @@ layout: null
             </div>
 
             <div class="column">
-                <h5 id="boomerang">Boomerang</h5>
+                <h5 id="boomerang">Date Boomerang</h5>
                 <p>
                     Time your choice.
                 </p>
@@ -540,7 +542,30 @@ layout: null
             </div>
             -->
 
-            <h3 id="phone">Bad Phone</h3>
+            <h3 id="bad-phone">Bad Phone</h3>
+
+            <script>
+                const phone = (function() {
+                    'use strict';
+
+                    return {
+                        /**
+                         * Formats a digit to a US style number.
+                         * @param integer
+                         * @returns e.g. +1 (xxx) xxx-xxxx
+                         */
+                        toUSString: function(integer) {
+                            let number = String(Math.trunc(integer));
+
+                            while (number.length < 10) {
+                                number = "0" + number;
+                            }
+
+                            return "+1 (" + number.substr(0, 3) + ") " + number.substr(3, 3) + "-" + number.substr(6, 4);
+                        }
+                    }
+                })();
+            </script>
 
             <div class="column">
                 <h5 id="random-phone">Random phone</h5>
@@ -566,18 +591,115 @@ layout: null
                         }
 
                         function nextPhone() {
-                            let number = String(random(9999999999));
-
-                            while (number.length < 10) {
-                                number = "0" + number;
-                            }
-
-                            outputRandomPhone.val("+1 (" + number.substr(0, 3) + ") " + number.substr(3, 3) + "-" + number.substr(6, 4));
+                            outputRandomPhone.val(phone.toUSString(random(9999999999)));
                         }
 
                         btnRandomPhone.on('click', nextPhone);
                         nextPhone();
                     })();
+                </script>
+                <hr>
+            </div>
+
+            <div class="column">
+                <h5 id="phone-slider">Phone Slider</h5>
+                <p>
+                    How precise is your mouse?
+                </p>
+                <div class="row">
+                    <div class="four columns">
+                        <label>Phone</label>
+                        <input id="phoneSlider" class="u-full-width" type="range">
+                    </div>
+                    <div class="eight columns">
+                        <label>&nbsp;</label>
+                        <input id="phoneValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
+                    </div>
+                </div>
+                <script>
+                    // Script if need
+                    (function() {
+                        'use strict';
+                        const inputPhoneSlider = $("#phoneSlider");
+                        const outputSliderValue = $("#phoneValue");
+
+                        inputPhoneSlider.attr("min", 0);
+                        inputPhoneSlider.attr("max", 9999999999);
+
+                        function determinePhone() {
+                            const value = Number(inputPhoneSlider.val());
+
+                            outputSliderValue.val(phone.toUSString(value));
+                        }
+                        inputPhoneSlider.on('change mousemove', determinePhone);
+                        determinePhone();
+                    })()
+                </script>
+                <hr>
+            </div>
+
+            <div class="column">
+                <h5 id="boomerang-phone">Phone Boomerang</h5>
+                <p>
+                    Time your choice.
+                </p>
+                <div class="row">
+                    <div class="four columns">
+                        <label>Phone</label>
+                        <input id="boomerangPhoneSlider" class="u-full-width" type="range" disabled>
+                    </div>
+                    <div class="eight columns">
+                        <label>&nbsp;</label>
+                        <input id="boomerangPhoneValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
+                    </div>
+                </div>
+                <p id="boomerangPhonePickValue">
+                    You haven't picked a number yet.
+                </p>
+                <button id="boomerangPhonePick" class="button-primary">Pick</button>
+                <script>
+                    // Script if need
+                    (function() {
+                        'use strict';
+                        const inputBoomerangSlider = $("#boomerangPhoneSlider");
+                        const outputSliderValue = $("#boomerangPhoneValue");
+                        const btnBoomerangPick = $("#boomerangPhonePick");
+                        const outputBoomerangPickValue = $("#boomerangPhonePickValue");
+
+                        inputBoomerangSlider.attr("min", Number(new Date("1900-01-01")));
+                        inputBoomerangSlider.attr("max", Number(new Date()));
+
+                        function getSliderPhone() {
+                            return phone.toUSString(inputBoomerangSlider.val());
+                        }
+
+                        function determinePhone() {
+                            outputSliderValue.val(getSliderPhone())
+                        }
+                        inputBoomerangSlider.on('change mousemove', determinePhone);
+                        determinePhone();
+
+                        btnBoomerangPick.on('click', function() {
+                            outputBoomerangPickValue.text("You're phone number is " + getSliderPhone())
+                        });
+
+                        let addDays = 10;
+                        setInterval(function() {
+                            const min = Number(inputBoomerangSlider.attr("min"));
+                            const max = Number(inputBoomerangSlider.attr("max"));
+                            const value = Number(inputBoomerangSlider.val());
+
+                            const nextValue = value + Math.random() * addDays;
+                            if (nextValue >= max) {
+                                addDays = -10;
+                            } else if(nextValue <= min) {
+                                addDays = 10;
+                            } else {
+                                inputBoomerangSlider.val(nextValue);
+                            }
+                            determinePhone();
+                        }, 0.5);
+                    })()
                 </script>
                 <hr>
             </div>
