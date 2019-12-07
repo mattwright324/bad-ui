@@ -33,16 +33,31 @@ layout: null
             </p>
             <h4>Bad</h4>
             <ul>
-                <li><a href="#date">Date inputs</a></li>
-                <li><a href="#password">Password inputs</a></li>
-                <li><a href="#phone">Phone inputs</a></li>
+                <li><a href="#date">Date inputs</a>
+                    <ul>
+                        <li><a href="#all-the-years">All the years</a></li>
+                        <li><a href="#index-of-pi">Index of π</a></li>
+                        <li><a href="#random-date">Random date</a></li>
+                        <li><a href="#day-adder">Day Adder</a></li>
+                        <li><a href="#date-slider">Date Slider</a></li>
+                        <li><a href="#boomerang">Boomerang</a></li>
+                        <li><a href="#roll-the-date">Roll the Date</a></li>
+                    </ul>
+                </li>
+                <li><a href="#logins">Login forms</a></li>
+                <li><a href="#phone">Phone inputs</a>
+                    <ul>
+                        <li><a href="#random-phone">Random Phone</a></li>
+                    </ul>
+                </li>
+                <li><a href="#volume">Volume inputs</a></li>
             </ul>
         </div>
         <div class="two-thirds column" style="margin-top: 5%">
             <h3 id="date">Bad Date</h3>
 
             <div class="column">
-                <h5>All the years</h5>
+                <h5 id="all-the-years">All the years</h5>
                 <p>
                     Please enter your birthdate.
                 </p>
@@ -76,7 +91,7 @@ layout: null
                     </div>
                     <div class="three columns">
                         <label>Year</label>
-                        <select class="u-full-width">
+                        <select id="yearSelect" class="u-full-width">
                             <script>
                                 for(let i=-9999; i<=9999; i++) {
                                     document.write("<option value='" + i + "'>" + Math.abs(i) + (i < 0 ? " b.c." : "") + "</option>")
@@ -86,14 +101,18 @@ layout: null
                     </div>
                 </div>
                 <p>
-                    Dropdown is slow to load in Firefox.
+                    Dropdown is slow to open in Firefox.
                 </p>
                 <script>
                     function randomizeChildren(element) {
-                        $(element+">").map(function (i, t) {
-                            let s = $(t).siblings();
-                            s.eq(Math.round(s.length * Math.random())).after(t)
-                        })
+                        function randomize() {
+                            $(element+">").map(function (i, t) {
+                                let s = $(t).siblings();
+                                s.eq(Math.round(s.length * Math.random())).after(t)
+                            })
+                        }
+                        randomize();
+                        $(element).change(randomize);
                     }
                     randomizeChildren("#daySelect");
                     randomizeChildren("#monthSelect");
@@ -102,7 +121,7 @@ layout: null
             </div>
 
             <div class="column">
-                <h5>Index of π</h5>
+                <h5 id="index-of-pi">Index of π</h5>
                 <p>
                     At what index of PI can we find your birthdate?
                 </p>
@@ -184,7 +203,7 @@ layout: null
             </div>
 
             <div class="column">
-                <h5>Random date</h5>
+                <h5 id="random-date">Random date</h5>
                 <p>
                     Is this your birthdate?
                 </p>
@@ -252,7 +271,7 @@ layout: null
             </div>
 
             <div class="column">
-                <h5>Day Adder</h5>
+                <h5 id="day-adder">Day Adder</h5>
                 <p>
                     That's it, just days.
                 </p>
@@ -292,7 +311,7 @@ layout: null
             </div>
 
             <div class="column">
-                <h5>Date Slider</h5>
+                <h5 id="date-slider">Date Slider</h5>
                 <p>
                     How precise is your mouse?
                 </p>
@@ -330,7 +349,7 @@ layout: null
             </div>
 
             <div class="column">
-                <h5>Boomerang</h5>
+                <h5 id="boomerang">Boomerang</h5>
                 <p>
                     Time your choice.
                 </p>
@@ -398,14 +417,14 @@ layout: null
             </div>
 
             <div class="column">
-                <h5>Roll the Date</h5>
+                <h5 id="roll-the-date">Roll the Date</h5>
                 <p>
                     Shake as best you can!
                 </p>
                 <div class="row">
                     <div class="four columns">
                         <label>Birthday</label>
-                        <input id="rolledDate" class="u-full-width" type="text" value="1970-01-01" style="border:none" disabled>
+                        <input id="rolledDate" class="u-full-width" type="text" value="1990-01-01" style="border:none" disabled>
                     </div>
                 </div>
                 <div class="row">
@@ -415,7 +434,6 @@ layout: null
                         .dice {
                             font-size: 2.5em;
                             margin-right: 5px;
-                            display: inline-block;
                         }
                     </style>
                 </div>
@@ -495,7 +513,7 @@ layout: null
                 <hr>
             </div>
 
-            <h3 id="password">Bad Password</h3>
+            <h3 id="logins">Bad Login Forms</h3>
 
             <div class="column">
                 <h5>Title</h5>
@@ -512,6 +530,48 @@ layout: null
             </div>
 
             <h3 id="phone">Bad Phone</h3>
+
+            <div class="column">
+                <h5 id="random-phone">Random phone</h5>
+                <p>
+                    Is this your phone number?
+                </p>
+                <div class="row">
+                    <div class="four columns">
+                        <label>Phone</label>
+                        <input id="randomPhone" class="u-full-width" type="text" value="555-123-4567" disabled>
+                    </div>
+                </div>
+                <button id="nextPhone" class="button-primary">Next</button>
+                <script>
+                    (function() {
+                        'use strict';
+
+                        const outputRandomPhone = $("#randomPhone");
+                        const btnRandomPhone = $("#nextPhone");
+
+                        function random(number) {
+                            return Math.floor(Math.random() * number);
+                        }
+
+                        function nextPhone() {
+                            let number = String(random(9999999999));
+
+                            while (number.length < 10) {
+                                number = "0" + number;
+                            }
+
+                            outputRandomPhone.val("+1 (" + number.substr(0, 3) + ") " + number.substr(3, 3) + "-" + number.substr(6, 4));
+                        }
+
+                        btnRandomPhone.on('click', nextPhone);
+                        nextPhone();
+                    })();
+                </script>
+                <hr>
+            </div>
+
+            <h3 id="volume">Bad Volume</h3>
 
             <div class="column">
                 <h5>Title</h5>
