@@ -23,7 +23,11 @@ layout: null
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100434147-8"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
         gtag('js', new Date());
 
         gtag('config', 'UA-100434147-8');
@@ -57,6 +61,7 @@ layout: null
                 <!--<li><a href="#logins">Login forms</a></li>-->
                 <li><a href="#bad-phone">Phone inputs</a>
                     <ul>
+                        <li><a href="#phone-dropdown">Phone Dropdown</a></li>
                         <li><a href="#random-phone">Random Phone</a></li>
                         <li><a href="#phone-slider">Phone Slider</a></li>
                         <li><a href="#boomerang-phone">Phone Boomerang</a></li>
@@ -65,6 +70,44 @@ layout: null
                 <!--<li><a href="#volume">Volume inputs</a></li>-->
             </ul>
         </div>
+
+        <script>
+            const global = (function () {
+                'use strict';
+
+                return {
+                    shuffleArray: function (array) {
+                        return array.sort(() => Math.random() - 0.5);
+                    },
+                    randomizeChildren: function randomizeChildren(element) {
+                        function randomize() {
+                            $(element + ">").map(function (i, t) {
+                                let s = $(t).siblings();
+                                s.eq(Math.round(s.length * Math.random())).after(t)
+                            })
+                        }
+
+                        randomize();
+                        $(element).change(randomize);
+                    },
+                    leftPad(string, char, length) {
+                        let padded = String(string);
+                        while (padded.length < length) {
+                            padded = char + padded;
+                        }
+                        return padded.substr(0, length);
+                    },
+                    rightPad(string, char, length) {
+                        let padded = String(string);
+                        while (padded.length < length) {
+                            padded += char;
+                        }
+                        return padded.substr(0, length);
+                    }
+                }
+            })();
+        </script>
+
         <div class="two-thirds column" style="margin-top: 5%">
             <h3 id="bad-date">Bad Date</h3>
 
@@ -78,7 +121,7 @@ layout: null
                         <label>Day</label>
                         <select id="daySelect" class="u-full-width">
                             <script>
-                                for(let i=1; i<=31; i++) {
+                                for (let i = 1; i <= 31; i++) {
                                     document.write("<option value='" + i + "'>" + i + "</option>")
                                 }
                             </script>
@@ -105,7 +148,7 @@ layout: null
                         <label>Year</label>
                         <select id="yearSelect" class="u-full-width">
                             <script>
-                                for(let i=-9999; i<=9999; i++) {
+                                for (let i = -9999; i <= 9999; i++) {
                                     document.write("<option value='" + i + "'>" + Math.abs(i) + (i < 0 ? " b.c." : "") + "</option>")
                                 }
                             </script>
@@ -116,18 +159,8 @@ layout: null
                     Dropdown is slow to open in Firefox.
                 </p>
                 <script>
-                    function randomizeChildren(element) {
-                        function randomize() {
-                            $(element+">").map(function (i, t) {
-                                let s = $(t).siblings();
-                                s.eq(Math.round(s.length * Math.random())).after(t)
-                            })
-                        }
-                        randomize();
-                        $(element).change(randomize);
-                    }
-                    randomizeChildren("#daySelect");
-                    randomizeChildren("#monthSelect");
+                    global.randomizeChildren("#daySelect");
+                    global.randomizeChildren("#monthSelect");
                 </script>
                 <hr>
             </div>
@@ -143,7 +176,8 @@ layout: null
                 <div class="row">
                     <div class="three columns">
                         <label>Index</label>
-                        <input id="indexOfPi" class="u-full-width" type="number" name="quantity" min="0" value="0" max="1000000" disabled>
+                        <input id="indexOfPi" class="u-full-width" type="number" name="quantity" min="0" value="0"
+                               max="1000000" disabled>
                     </div>
                     <div class="nine columns">
                         <label>Birthday</label>
@@ -151,7 +185,7 @@ layout: null
                         <label id="piDateStatus" style="color:red"></label>
                     </div>
                     <script>
-                        (function() {
+                        (function () {
                             'use strict';
                             const btnLoadDigits = $("#piLoadDigits");
                             const inputIndex = $("#indexOfPi");
@@ -160,11 +194,11 @@ layout: null
 
                             // Load digits of PI
                             let pi = Math.PI.toString();
-                            btnLoadDigits.on('click', function() {
+                            btnLoadDigits.on('click', function () {
                                 btnLoadDigits.hide();
                                 $.ajax({
                                     url: "data/pi_dec_1m.txt"
-                                }).done(function(res) {
+                                }).done(function (res) {
                                     pi = res;
 
                                     inputIndex.removeAttr("disabled");
@@ -194,6 +228,7 @@ layout: null
                                     outputDate.css("border", "solid 1px green")
                                 }
                             }
+
                             inputIndex.on('change input', findDate);
                         })();
                     </script>
@@ -231,7 +266,7 @@ layout: null
                     <button id="nextDate" class="button-primary">Next</button>
                 </div>
                 <script>
-                    (function() {
+                    (function () {
                         'use strict';
 
                         const outputRandomDate = $("#randomDate");
@@ -241,25 +276,26 @@ layout: null
                         function random(number) {
                             return Math.floor(Math.random() * number);
                         }
+
                         function nextDate() {
                             let year = random(9999);
                             let month = random(12);
                             let day = random(31);
 
-                            if(month < 10) {
+                            if (month < 10) {
                                 month = "0" + month;
                             }
-                            if(day < 10) {
+                            if (day < 10) {
                                 day = "0" + day;
                             }
-                            while(String(year).length < 4) {
+                            while (String(year).length < 4) {
                                 year = "0" + year;
                             }
 
                             const dateString = year + "-" + month + "-" + day;
                             const date = new Date(dateString);
 
-                            if(isNaN(date)) {
+                            if (isNaN(date)) {
                                 // Not valid, try again
                                 nextDate();
                             } else {
@@ -268,13 +304,14 @@ layout: null
 
                                 outputRandomDate.val(dateString);
 
-                                if(now.isBefore(date)) {
+                                if (now.isBefore(date)) {
                                     yourAge.val("You haven't been born yet!");
                                 } else {
                                     yourAge.val("You're " + years + " years old!")
                                 }
                             }
                         }
+
                         btnRandomDate.on('click', nextDate);
                         nextDate();
                     })();
@@ -290,29 +327,31 @@ layout: null
                 <div class="row">
                     <div class="four columns">
                         <label>Birthday</label>
-                        <input id="dateAdderValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
+                        <input id="dateAdderValue" class="u-full-width" type="text" value="..." style="border:none"
+                               disabled>
                     </div>
                 </div>
                 <button id="minusDay" class="button-primary">-1 Day</button>
                 <button id="plusDay" class="button-primary">+1 Day</button>
                 <script>
                     // Script if need
-                    (function() {
+                    (function () {
                         'use strict';
                         const dateAdderValue = $("#dateAdderValue");
                         const btnMinusDay = $("#minusDay");
                         const btnPlusDay = $("#plusDay");
 
                         let date = moment(new Date("1970-01-01"));
+
                         function updateDay() {
                             dateAdderValue.val(date.format("YYYY-MM-DD"))
                         }
 
-                        btnMinusDay.on('click', function() {
+                        btnMinusDay.on('click', function () {
                             date = date.add(-1, "days");
                             updateDay();
                         });
-                        btnPlusDay.on('click', function() {
+                        btnPlusDay.on('click', function () {
                             date = date.add(1, "days");
                             updateDay();
                         });
@@ -334,12 +373,13 @@ layout: null
                     </div>
                     <div class="eight columns">
                         <label>&nbsp;</label>
-                        <input id="sliderValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
+                        <input id="sliderValue" class="u-full-width" type="text" value="..." style="border:none"
+                               disabled>
                     </div>
                 </div>
                 <script>
                     // Script if need
-                    (function() {
+                    (function () {
                         'use strict';
                         const inputDateSlider = $("#dateSlider");
                         const outputSliderValue = $("#sliderValue");
@@ -353,6 +393,7 @@ layout: null
 
                             outputSliderValue.val(moment(date).format("YYYY-MM-DD"))
                         }
+
                         inputDateSlider.on('change mousemove', determineDate);
                         determineDate();
                     })()
@@ -372,7 +413,8 @@ layout: null
                     </div>
                     <div class="eight columns">
                         <label>&nbsp;</label>
-                        <input id="boomerangDateValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
+                        <input id="boomerangDateValue" class="u-full-width" type="text" value="..." style="border:none"
+                               disabled>
                     </div>
                 </div>
                 <p id="boomerangDatePickValue">
@@ -393,7 +435,7 @@ layout: null
                 </div>
                 <script>
                     // Script if need
-                    (function() {
+                    (function () {
                         'use strict';
                         const inputBoomerangSlider = $("#boomerangDateSlider");
                         const outputSliderValue = $("#boomerangDateValue");
@@ -407,23 +449,26 @@ layout: null
                         function getSliderSpeed() {
                             return Number(selectBoomerangSpeed.find(":selected").val());
                         }
+
                         function getSliderDate() {
                             const millis = Number(inputBoomerangSlider.val());
                             const date = new Date(millis);
                             return moment(date).format("YYYY-MM-DD");
                         }
+
                         function determineDate() {
                             outputSliderValue.val(getSliderDate())
                         }
+
                         inputBoomerangSlider.on('change mousemove', determineDate);
                         determineDate();
 
-                        btnBoomerangPick.on('click', function() {
+                        btnBoomerangPick.on('click', function () {
                             outputBoomerangPickValue.text("You're birthday is " + getSliderDate())
                         });
 
                         let direction = 1;
-                        setInterval(function() {
+                        setInterval(function () {
                             const min = moment(new Date(Number(inputBoomerangSlider.attr("min"))));
                             const max = moment(new Date(Number(inputBoomerangSlider.attr("max"))));
                             const value = moment(new Date(Number(inputBoomerangSlider.val())));
@@ -431,7 +476,7 @@ layout: null
                             const nextValue = value.add(Math.random() * direction * getSliderSpeed(), 'days');
                             if (nextValue.isSame(max) || nextValue.isAfter(max)) {
                                 direction = -1;
-                            } else if(nextValue.isSame(min) || nextValue.isBefore(min)) {
+                            } else if (nextValue.isSame(min) || nextValue.isBefore(min)) {
                                 direction = 1;
                             }
 
@@ -451,7 +496,8 @@ layout: null
                 <div class="row">
                     <div class="four columns">
                         <label>Birthday</label>
-                        <input id="rolledDate" class="u-full-width" type="text" value="1990-01-01" style="border:none" disabled>
+                        <input id="rolledDate" class="u-full-width" type="text" value="1990-01-01" style="border:none"
+                               disabled>
                     </div>
                 </div>
                 <div class="row">
@@ -483,7 +529,7 @@ layout: null
                 </div>
                 <script>
                     // Script if need
-                    (function() {
+                    (function () {
                         'use strict';
 
                         const dice = ["dice-1", "dice-2", "dice-3", "dice-4", "dice-5", "dice-6"];
@@ -496,25 +542,25 @@ layout: null
 
                         function setDiceClass(element, dieIndex) {
                             dieIndex = Math.trunc(dieIndex);
-                            for(let i=0; i<dice.length; i++) {
+                            for (let i = 0; i < dice.length; i++) {
                                 element.removeClass(dice[i]);
                             }
                             element.effect("shake", {}, 500);
                             element.addClass(dice[dieIndex]);
-                            element.data("value", dieIndex+1)
+                            element.data("value", dieIndex + 1)
                         }
 
                         function roll(time, times, callback) {
                             console.log(time);
-                            if(time < times) {
+                            if (time < times) {
                                 const firstIndex = Math.random() * dice.length;
                                 const secondIndex = Math.random() * dice.length;
 
                                 setDiceClass(firstDice, firstIndex);
                                 setDiceClass(secondDice, secondIndex);
 
-                                setTimeout(function() {
-                                    roll(time+1, times, callback);
+                                setTimeout(function () {
+                                    roll(time + 1, times, callback);
                                 }, 500);
                             } else {
                                 callback();
@@ -522,7 +568,7 @@ layout: null
                         }
 
                         function doRoll(state) {
-                            roll(0, 3, function() {
+                            roll(0, 3, function () {
                                 const first = firstDice.data("value");
                                 const second = secondDice.data("value");
                                 const amount = (first + second) * state;
@@ -532,8 +578,13 @@ layout: null
                                 outputRolledDate.val(currentDate.add(amount, unit).format("YYYY-MM-DD"));
                             });
                         }
-                        btnRollMinus.on('click', function(){doRoll(-1)});
-                        btnRollAdd.on('click', function(){doRoll(1)});
+
+                        btnRollMinus.on('click', function () {
+                            doRoll(-1)
+                        });
+                        btnRollAdd.on('click', function () {
+                            doRoll(1)
+                        });
                     })()
                 </script>
                 <hr>
@@ -560,7 +611,7 @@ layout: null
             <h3 id="bad-phone">Bad Phone</h3>
 
             <script>
-                const phone = (function() {
+                const phone = (function () {
                     'use strict';
 
                     return {
@@ -569,7 +620,7 @@ layout: null
                          * @param integer
                          * @returns e.g. +1 (xxx) xxx-xxxx
                          */
-                        toUSString: function(integer) {
+                        toUSString: function (integer) {
                             let number = String(Math.trunc(integer));
 
                             while (number.length < 10) {
@@ -581,6 +632,64 @@ layout: null
                     }
                 })();
             </script>
+
+            <div class="column">
+                <h5 id="phone-dropdown">Phone Dropdown</h5>
+                <p>
+                    Looks easy, right?
+                </p>
+                <div class="row">
+                    <div class="two columns">
+                        <label>Phone</label>
+                        <select id="phoneFirstSet" class="u-full-width">
+                            <script>
+                                for (let i = 0; i <= 999; i++) {
+                                    const padded = global.leftPad(i, "0", 3);
+                                    document.write("<option value='" + padded + "'>" + padded + "</option>")
+                                }
+                            </script>
+                        </select>
+                    </div>
+                    <div class="three columns">
+                        <label>&nbsp;</label>
+                        <select id="phoneSecondSet" class="u-full-width">
+                            <script>
+                                for (let i = 0; i <= 999; i++) {
+                                    const padded = global.leftPad(i, "0", 3);
+                                    document.write("<option value='" + padded + "'>" + padded + "</option>")
+                                }
+                            </script>
+                        </select>
+                    </div>
+                    <div class="three columns">
+                        <label>&nbsp;</label>
+                        <select id="phoneThirdSet" class="u-full-width">
+                            <script>
+                                let values = [];
+                                for (let i = 0; i <= 9999; i++) {
+                                    const padded = global.leftPad(i, "0", 4);
+                                    values.push(padded);
+                                }
+
+                                values = global.shuffleArray(values);
+
+                                for (let i = 0; i < values.length; i++) {
+                                    const padded = values[i];
+                                    document.write("<option value='" + padded + "'>" + padded + "</option>")
+                                }
+                            </script>
+                        </select>
+                    </div>
+                </div>
+                <p>
+                    Dropdown is slow to open in Firefox.
+                </p>
+                <script>
+                    global.randomizeChildren("#phoneFirstSet");
+                    global.randomizeChildren("#phoneSecondSet");
+                </script>
+                <hr>
+            </div>
 
             <div class="column">
                 <h5 id="random-phone">Random phone</h5>
@@ -595,7 +704,7 @@ layout: null
                 </div>
                 <button id="nextPhone" class="button-primary">Next</button>
                 <script>
-                    (function() {
+                    (function () {
                         'use strict';
 
                         const outputRandomPhone = $("#randomPhone");
@@ -628,12 +737,13 @@ layout: null
                     </div>
                     <div class="eight columns">
                         <label>&nbsp;</label>
-                        <input id="phoneValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
+                        <input id="phoneValue" class="u-full-width" type="text" value="..." style="border:none"
+                               disabled>
                     </div>
                 </div>
                 <script>
                     // Script if need
-                    (function() {
+                    (function () {
                         'use strict';
                         const inputPhoneSlider = $("#phoneSlider");
                         const outputSliderValue = $("#phoneValue");
@@ -646,6 +756,7 @@ layout: null
 
                             outputSliderValue.val(phone.toUSString(value));
                         }
+
                         inputPhoneSlider.on('change mousemove', determinePhone);
                         determinePhone();
                     })()
@@ -665,7 +776,8 @@ layout: null
                     </div>
                     <div class="eight columns">
                         <label>&nbsp;</label>
-                        <input id="boomerangPhoneValue" class="u-full-width" type="text" value="..." style="border:none" disabled>
+                        <input id="boomerangPhoneValue" class="u-full-width" type="text" value="..." style="border:none"
+                               disabled>
                     </div>
                 </div>
                 <p id="boomerangPhonePickValue">
@@ -687,7 +799,7 @@ layout: null
 
                 <script>
                     // Script if need
-                    (function() {
+                    (function () {
                         'use strict';
                         const inputBoomerangSlider = $("#boomerangPhoneSlider");
                         const outputSliderValue = $("#boomerangPhoneValue");
@@ -701,21 +813,24 @@ layout: null
                         function getSliderSpeed() {
                             return Number(selectBoomerangSpeed.find(":selected").val());
                         }
+
                         function getSliderPhone() {
                             return phone.toUSString(inputBoomerangSlider.val());
                         }
+
                         function determinePhone() {
                             outputSliderValue.val(getSliderPhone())
                         }
+
                         inputBoomerangSlider.on('change mousemove', determinePhone);
                         determinePhone();
 
-                        btnBoomerangPick.on('click', function() {
+                        btnBoomerangPick.on('click', function () {
                             outputBoomerangPickValue.text("You're phone number is " + getSliderPhone())
                         });
 
                         let direction = 1;
-                        setInterval(function() {
+                        setInterval(function () {
                             const min = Number(inputBoomerangSlider.attr("min"));
                             const max = Number(inputBoomerangSlider.attr("max"));
                             const value = Number(inputBoomerangSlider.val());
@@ -723,7 +838,7 @@ layout: null
                             const nextValue = value + (Math.random() * direction * getSliderSpeed());
                             if (nextValue >= max) {
                                 direction = -1;
-                            } else if(nextValue <= min) {
+                            } else if (nextValue <= min) {
                                 direction = 1;
                             } else {
                                 inputBoomerangSlider.val(nextValue);
