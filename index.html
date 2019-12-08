@@ -860,19 +860,23 @@ layout: null
             <div class="column">
                 <h5 id="pump-it-volume">Pump It Volume!</h5>
                 <p>
-                    The volume bar is leaking, you just need to fill it!
+                    Keep on pumpin' it!
                 </p>
-                <div class="row">
-                    <div class="column pump-container">
-                        <img class="pump-handle" src="img/pumpit-handle.png">
-                        <img class="pump-cylinder" src="img/pumpit-cylinder.png">
-                        <progress id="pump-value" min="0" max="100"></progress>
+                <div class="row" style="margin-bottom: 4%">
+                    <div class="columns two">
+                        <div class="pump-container">
+                            <img class="pump-handle" src="img/pumpit-handle.png">
+                            <img class="pump-cylinder" src="img/pumpit-cylinder.png">
+                            <progress id="pump-value" min="0" max="100"></progress>
+                        </div>
+                    </div>
+                    <div class="columns ten" id="pump-comment" style="color:darkgray">
+                        Be careful, you could make the leak worse.
                     </div>
                     <style>
                         .pump-container {
                             position: relative;
                             height: 143px;
-                            margin-bottom: 4%;
                         }
                         .pump-handle {
                             position: absolute;
@@ -909,9 +913,7 @@ layout: null
                         }
                     </style>
                 </div>
-                <p id="pump-status">
-
-                </p>
+                <p id="pump-status"></p>
                 <button id="movePump" class="button-primary">Pump</button>
                 <script>
                     // Script if need
@@ -921,6 +923,7 @@ layout: null
                         const pumpHandle = $(".pump-handle");
                         const pumpStatus = $("#pump-status");
                         const pumpValue = $("#pump-value");
+                        const pumpComment = $("#pump-comment");
 
                         let currentValue = 50;
 
@@ -930,9 +933,11 @@ layout: null
                             pumpStatus.text("You're volume is at " + Math.trunc(currentValue) + "%");
                         }
 
+                        let leakRate = 1;
+
                         // That pesky leak, when will someone fix that?
                         setInterval(function() {
-                            currentValue -= Math.random();
+                            currentValue -= Math.random() * leakRate;
 
                             if(currentValue <= 5) {
                                 currentValue = 5;
@@ -942,6 +947,14 @@ layout: null
                         }, 150);
 
                         function pumpUp(amount, totalMillis) {
+                            if(currentValue + amount >= 108) {
+                                leakRate = 5;
+                                pumpComment.text("Whoops, you broke it even more.");
+                                pumpComment.css("color", "red");
+                            } else {
+                                console.log(currentValue + amount);
+                            }
+
                             const times = 5;
                             pumpUpOverMillis(0, times, amount / times, totalMillis / times)
                         }
