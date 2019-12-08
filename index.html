@@ -47,7 +47,7 @@ layout: null
             </p>
             <h4>Bad</h4>
             <ul>
-                <li><a href="#bad-date">Date inputs</a>
+                <li>Date inputs
                     <ul>
                         <li><a href="#all-the-years">All the years</a></li>
                         <li><a href="#index-of-pi">Index of π</a></li>
@@ -59,7 +59,7 @@ layout: null
                     </ul>
                 </li>
                 <!--<li><a href="#logins">Login forms</a></li>-->
-                <li><a href="#bad-phone">Phone inputs</a>
+                <li>Phone inputs
                     <ul>
                         <li><a href="#phone-dropdown">Phone Dropdown</a></li>
                         <li><a href="#random-phone">Random Phone</a></li>
@@ -67,7 +67,11 @@ layout: null
                         <li><a href="#boomerang-phone">Phone Boomerang</a></li>
                     </ul>
                 </li>
-                <!--<li><a href="#volume">Volume inputs</a></li>-->
+                <li>Volume inputs
+                    <ul>
+                        <li><a href="#pump-it-volume">Pump It Volume</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
 
@@ -109,7 +113,7 @@ layout: null
         </script>
 
         <div class="two-thirds column" style="margin-top: 5%">
-            <h3 id="bad-date">Bad Date</h3>
+            <h3>Bad Date</h3>
 
             <div class="column">
                 <h5 id="all-the-years">All the years</h5>
@@ -591,7 +595,7 @@ layout: null
             </div>
 
             <!--
-            <h3 id="logins">Bad Login Forms</h3>
+            <h3>Bad Login Forms</h3>
 
             <div class="column">
                 <h5>Title</h5>
@@ -608,7 +612,7 @@ layout: null
             </div>
             -->
 
-            <h3 id="bad-phone">Bad Phone</h3>
+            <h3>Bad Phone</h3>
 
             <script>
                 const phone = (function () {
@@ -850,9 +854,130 @@ layout: null
                 <hr>
             </div>
 
-            <!--
-            <h3 id="volume">Bad Volume</h3>
 
+            <h3>Bad Volume</h3>
+
+            <div class="column">
+                <h5 id="pump-it-volume">Pump It Volume!</h5>
+                <p>
+                    The volume bar is leaking, you just need to fill it!
+                </p>
+                <div class="row">
+                    <div class="column pump-container">
+                        <img class="pump-handle" src="img/pumpit-handle.png">
+                        <img class="pump-cylinder" src="img/pumpit-cylinder.png">
+                        <progress id="pump-value" min="0" max="100"></progress>
+                    </div>
+                    <style>
+                        .pump-container {
+                            position: relative;
+                            height: 143px;
+                            margin-bottom: 4%;
+                        }
+                        .pump-handle {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            z-index: 10;
+                        }
+                        .pump-cylinder {
+                            position: absolute;
+                            top: 43px;
+                            left: 0;
+                            z-index: 11;
+                        }
+                        #pump-value {
+                            position: absolute;
+                            top: 63px;
+                            left: -10px;
+                            width: 143px;
+                            -webkit-transform: rotate(-90deg);
+                            transform: rotate(-90deg);
+                        }
+                        @keyframes move-handle {
+                            0%   {top:0}
+                            45%  {top:37px}
+                            55%  {top:37px}
+                            100% {top:0}
+                        }
+                        .pump-handle-move {
+                            animation-name: move-handle;
+                            animation-duration: 0.35s;
+                        }
+                        button[disabled] {
+                            background-color: lightgray!important;
+                        }
+                    </style>
+                </div>
+                <p id="pump-status">
+
+                </p>
+                <button id="movePump" class="button-primary">Pump</button>
+                <script>
+                    // Script if need
+                    (function() {
+                        'use strict';
+                        const btnMovePump = $("#movePump");
+                        const pumpHandle = $(".pump-handle");
+                        const pumpStatus = $("#pump-status");
+                        const pumpValue = $("#pump-value");
+
+                        let currentValue = 50;
+
+                        function updatePumpValue() {
+                            pumpValue.val(currentValue);
+
+                            pumpStatus.text("You're volume is at " + Math.trunc(currentValue) + "%");
+                        }
+
+                        // That pesky leak, when will someone fix that?
+                        setInterval(function() {
+                            currentValue -= Math.random();
+
+                            if(currentValue <= 5) {
+                                currentValue = 5;
+                            }
+
+                            updatePumpValue();
+                        }, 150);
+
+                        function pumpUp(amount, totalMillis) {
+                            const times = 5;
+                            pumpUpOverMillis(0, times, amount / times, totalMillis / times)
+                        }
+                        function pumpUpOverMillis(iteration, totalTimes, amount, millis) {
+                            currentValue += amount;
+                            if (currentValue >= 99) {
+                                currentValue = 99;
+                            }
+
+                            updatePumpValue();
+
+                            if(iteration < totalTimes) {
+                                setTimeout(function(){
+                                    pumpUpOverMillis(iteration + 1, totalTimes, amount, millis);
+                                }, millis);
+                            }
+                        }
+
+                        btnMovePump.on('click', function() {
+                            btnMovePump.attr("disabled", "true");
+                            pumpHandle.addClass("pump-handle-move");
+
+                            pumpUp(10, 350);
+
+                            setTimeout(function() {
+                                btnMovePump.removeAttr("disabled");
+                                pumpHandle.removeClass("pump-handle-move");
+                            }, 350);
+                        })
+                    })()
+                </script>
+                <hr>
+            </div>
+
+
+            <!--
             <div class="column">
                 <h5>Title</h5>
                 <p>
@@ -867,22 +992,11 @@ layout: null
                 <hr>
             </div>
             -->
-
-            <!--
-            <div class="column">
-                <h5>Title</h5>
-                <p>
-                    Message
-                </p>
-                <script>
-                    // Script if need
-                    (function() {
-                        'use strict';
-                    })()
-                </script>
-                <hr>
-            </div>
-            -->
+        </div>
+    </div>
+    <div class="row" style="margin-top: 5%; margin-bottom: 5%;">
+        <div class="twelve columns" align=center style="color:darkgray">
+            mattwright324 | 2019 | <a href="/">home</a> | <a href="https://github.com/mattwright324">github</a>
         </div>
     </div>
 </div>
