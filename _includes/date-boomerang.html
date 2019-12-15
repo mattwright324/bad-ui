@@ -1,0 +1,85 @@
+<div class="column">
+    <h5 id="boomerang">Date Boomerang</h5>
+    <p>
+        Time your choice.
+    </p>
+    <div class="row">
+        <div class="four columns">
+            <label>Birthday</label>
+            <input id="boomerangDateSlider" class="u-full-width" type="range" disabled>
+        </div>
+        <div class="eight columns">
+            <label>&nbsp;</label>
+            <input id="boomerangDateValue" class="u-full-width" type="text" value="..." style="border:none"
+                   disabled>
+        </div>
+    </div>
+    <p id="boomerangDatePickValue">
+        You haven't picked a date yet.
+    </p>
+    <div class="row">
+        <div class="two columns">
+            <button id="boomerangDatePick" class="button-primary">Pick</button>
+        </div>
+        <div class="three columns">
+            <select id="boomerangDateSpeed" class="u-full-width">
+                <option value="1">Slow</option>
+                <option value="10" selected>Medium</option>
+                <option value="100">Fast</option>
+                <option value="1000">Super Fast</option>
+            </select>
+        </div>
+    </div>
+    <script>
+        (function () {
+            'use strict';
+            const inputBoomerangSlider = $("#boomerangDateSlider");
+            const outputSliderValue = $("#boomerangDateValue");
+            const btnBoomerangPick = $("#boomerangDatePick");
+            const outputBoomerangPickValue = $("#boomerangDatePickValue");
+            const selectBoomerangSpeed = $("#boomerangDateSpeed");
+
+            inputBoomerangSlider.attr("min", Number(new Date("1900-01-01")));
+            inputBoomerangSlider.attr("max", Number(new Date()));
+
+            function getSliderSpeed() {
+                return Number(selectBoomerangSpeed.find(":selected").val());
+            }
+
+            function getSliderDate() {
+                const millis = Number(inputBoomerangSlider.val());
+                const date = new Date(millis);
+                return moment(date).format("YYYY-MM-DD");
+            }
+
+            function determineDate() {
+                outputSliderValue.val(getSliderDate())
+            }
+
+            inputBoomerangSlider.on('change mousemove', determineDate);
+            determineDate();
+
+            btnBoomerangPick.on('click', function () {
+                outputBoomerangPickValue.text("You're birthday is " + getSliderDate())
+            });
+
+            let direction = 1;
+            setInterval(function () {
+                const min = moment(new Date(Number(inputBoomerangSlider.attr("min"))));
+                const max = moment(new Date(Number(inputBoomerangSlider.attr("max"))));
+                const value = moment(new Date(Number(inputBoomerangSlider.val())));
+
+                const nextValue = value.add(Math.random() * direction * getSliderSpeed(), 'days');
+                if (nextValue.isSame(max) || nextValue.isAfter(max)) {
+                    direction = -1;
+                } else if (nextValue.isSame(min) || nextValue.isBefore(min)) {
+                    direction = 1;
+                }
+
+                inputBoomerangSlider.val(nextValue.valueOf());
+                determineDate();
+            }, 5);
+        })()
+    </script>
+    <hr>
+</div>

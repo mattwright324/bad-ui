@@ -1,0 +1,83 @@
+<div class="column">
+    <h5 id="index-of-pi">Index of π</h5>
+    <p>
+        At what index of PI can we find your birthdate?
+    </p>
+    <p>
+        <button id="piLoadDigits" class="button-primary">Load a million digits (1MB)</button>
+    </p>
+    <div class="row">
+        <div class="three columns">
+            <label>Index</label>
+            <input id="indexOfPi" class="u-full-width" type="number" name="quantity" min="0" value="0"
+                   max="1000000" disabled>
+        </div>
+        <div class="nine columns">
+            <label>Birthday</label>
+            <input id="piDate" class="four" type="text" value="..." disabled>
+            <label id="piDateStatus" style="color:red"></label>
+        </div>
+        <script>
+            (function () {
+                'use strict';
+                const btnLoadDigits = $("#piLoadDigits");
+                const inputIndex = $("#indexOfPi");
+                const outputDate = $("#piDate");
+                const outputDateStatus = $("#piDateStatus");
+
+                // Load digits of PI
+                let pi = Math.PI.toString();
+                btnLoadDigits.on('click', function () {
+                    btnLoadDigits.hide();
+                    $.ajax({
+                        url: "data/pi_dec_1m.txt"
+                    }).done(function (res) {
+                        pi = res;
+
+                        inputIndex.removeAttr("disabled");
+                        inputIndex.attr("max", pi.length - 8);
+                        findDate();
+                    });
+                });
+
+                function findDate() {
+                    const index = Number(inputIndex.val());
+                    const value = pi.substr(index, 8);
+
+                    const year = value.substr(0, 4);
+                    const month = value.substr(4, 2);
+                    const day = value.substr(6, 2);
+                    const dateString = year + "-" + month + "-" + day;
+
+                    outputDate.val(dateString);
+
+                    const date = new Date(dateString);
+
+                    if (isNaN(date)) {
+                        outputDateStatus.text("Whoops, that's not a valid date. Try again.");
+                        outputDate.css("border", "solid 1px red")
+                    } else {
+                        outputDateStatus.text("");
+                        outputDate.css("border", "solid 1px green")
+                    }
+                }
+
+                inputIndex.on('change input', findDate);
+            })();
+        </script>
+    </div>
+    <p>
+        <small>
+            <a href="https://www.reddit.com/r/badUIbattles/comments/dyj2yq/best_way_to_enter_your_birthday/">
+                Best way to enter your birthday
+            </a>
+        </small>
+        <br>
+        <small>
+            <a href="https://pi2e.ch/blog/2017/03/10/pi-digits-download/#download">
+                PI digits download
+            </a>
+        </small>
+    </p>
+    <hr>
+</div>

@@ -1,0 +1,37 @@
+<div class="column">
+    <h5 id="phone-slider">Phone Slider</h5>
+    <p>
+        How precise is your mouse?
+    </p>
+    <div class="row">
+        <div class="four columns">
+            <label>Phone</label>
+            <input id="phoneSlider" class="u-full-width" type="range">
+        </div>
+        <div class="eight columns">
+            <label>&nbsp;</label>
+            <input id="phoneValue" class="u-full-width" type="text" value="..." style="border:none"
+                   disabled>
+        </div>
+    </div>
+    <script>
+        (function () {
+            'use strict';
+            const inputPhoneSlider = $("#phoneSlider");
+            const outputSliderValue = $("#phoneValue");
+
+            inputPhoneSlider.attr("min", 0);
+            inputPhoneSlider.attr("max", 9999999999);
+
+            function determinePhone() {
+                const value = Number(inputPhoneSlider.val());
+
+                outputSliderValue.val(phone.toUSString(value));
+            }
+
+            inputPhoneSlider.on('change mousemove', determinePhone);
+            determinePhone();
+        })()
+    </script>
+    <hr>
+</div>

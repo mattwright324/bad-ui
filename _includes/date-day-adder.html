@@ -1,0 +1,40 @@
+<div class="column">
+    <h5 id="day-adder">Day Adder</h5>
+    <p>
+        That's it, just days.
+    </p>
+    <div class="row">
+        <div class="four columns">
+            <label>Birthday</label>
+            <input id="dateAdderValue" class="u-full-width" type="text" value="..." style="border:none"
+                   disabled>
+        </div>
+    </div>
+    <button id="minusDay" class="button-primary">-1 Day</button>
+    <button id="plusDay" class="button-primary">+1 Day</button>
+    <script>
+        (function () {
+            'use strict';
+            const dateAdderValue = $("#dateAdderValue");
+            const btnMinusDay = $("#minusDay");
+            const btnPlusDay = $("#plusDay");
+
+            let date = moment(new Date("1970-01-01"));
+
+            function updateDay() {
+                dateAdderValue.val(date.format("YYYY-MM-DD"))
+            }
+
+            btnMinusDay.on('click', function () {
+                date = date.add(-1, "days");
+                updateDay();
+            });
+            btnPlusDay.on('click', function () {
+                date = date.add(1, "days");
+                updateDay();
+            });
+            updateDay();
+        })()
+    </script>
+    <hr>
+</div>

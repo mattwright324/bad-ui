@@ -1,0 +1,643 @@
+<div class="column">
+    <h5 id="fiddle-volume">Fiddle Volume</h5>
+    <p>
+        How exactly does this thing work?
+    </p>
+    <div class="columns twelve" style="margin-bottom: 4%;">
+        <div id="fiddle-container">
+            <img class="fiddle-base" draggable="false" src="img/fiddle-base.png">
+            <progress id="fiddle-value" min="0" max="100" value="0"></progress>
+            <div id="fiddle-wheel1" class="fiddle-wheel">
+                <div class='handle'></div>
+            </div>
+            <div id="fiddle-wheel2" class="fiddle-wheel">
+                <div class='handle'></div>
+            </div>
+            <div id="fiddle-lever1" class="fiddle-lever">
+                <div class='handle'></div>
+            </div>
+            <div id="fiddle-lever2" class="fiddle-lever">
+                <div class='handle'></div>
+            </div>
+            <div id="fiddle-lever3" class="fiddle-lever">
+                <div class='handle'></div>
+            </div>
+            <div id="fiddle-slider-switch"></div>
+            <img id="fiddle-button-a" draggable="true" class="fiddle-button">
+            <img id="fiddle-button-b" draggable="true" class="fiddle-button">
+            <img id="fiddle-button-c" draggable="true" class="fiddle-button">
+            <img id="fiddle-button-d" draggable="true" class="fiddle-button">
+            <img id="fiddle-button-e" draggable="true" class="fiddle-button">
+            <img id="fiddle-button-f" draggable="true" class="fiddle-button">
+            <img id="fiddle-button-g" draggable="true" class="fiddle-button">
+            <img id="fiddle-button-h" draggable="true" class="fiddle-button">
+        </div>
+    </div>
+    <p id="fiddle-status"></p>
+    <style>
+        #fiddle-container {
+            position: relative;
+            height: 250px;
+
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        .fiddle-base {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        #fiddle-value {
+            position: absolute;
+            top: 118px;
+            left: -33px;
+            width: 210px;
+            -webkit-transform: rotate(-90deg);
+            transform: rotate(-90deg);
+            border: none;
+            border-radius: 5px;
+            background-color: #eee;
+            z-index: 11;
+        }
+
+        #fiddle-value[value]::-moz-progress-bar {
+            border-radius: 5px;
+            background-color: #1EAEDB;
+        }
+
+        #fiddle-value[value]::-webkit-progress-bar {
+            border-radius: 5px;
+            background-color: #eee;
+        }
+
+        #fiddle-value[value]::-webkit-progress-value {
+            border-radius: 5px;
+            background-color: #1EAEDB;
+        }
+
+        .fiddle-ind {
+            position: absolute;
+            z-index: 11;
+        }
+
+        .fiddle-wheel {
+            position: absolute;
+            background-image: url(/img/fiddle-wheel2.png);
+            width: 35px;
+            height: 35px;
+            align-content: center;
+            z-index: 11;
+            animation-duration: 0.5s;
+            animation-fill-mode: forwards;
+        }
+
+        .handle {
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .fiddle-wheel .handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            left: 35%;
+        }
+
+        #fiddle-wheel1 {
+            position: absolute;
+            top: 20px;
+            left: 170px;
+        }
+        #fiddle-wheel2 {
+            position: absolute;
+            top: 20px;
+            left: 218px;
+        }
+
+        @keyframes wheel-rotate1 {
+            0% {
+                transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -webkit-transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(180deg);
+                -moz-transform: rotate(180deg);
+                -webkit-transform: rotate(180deg);
+            }
+        }
+        .first-wheel-rotation {
+            animation-name: wheel-rotate1;
+        }
+        @keyframes wheel-rotate2 {
+            0% {
+                transform: rotate(180deg);
+                -moz-transform: rotate(180deg);
+                -webkit-transform: rotate(180deg);
+            }
+            100% {
+                transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -webkit-transform: rotate(360deg);
+            }
+        }
+        .second-wheel-rotation {
+            animation-name: wheel-rotate2;
+        }
+
+        .fiddle-lever {
+            position: absolute;
+            background-image: url(img/fiddle-lever2.png);
+            width: 25px;
+            height: 24px;
+            z-index: 9;
+            animation-duration: 0.5s;
+            animation-fill-mode: forwards;
+        }
+
+        .fiddle-lever .handle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+        }
+
+        #fiddle-lever1 {
+            position: absolute;
+            top: 8px;
+            left: 272px;
+        }
+
+        #fiddle-lever2 {
+            position: absolute;
+            top: 78px;
+            left: 272px;
+        }
+
+        #fiddle-lever3 {
+            position: absolute;
+            top: 148px;
+            left: 272px;
+        }
+
+        @keyframes lever-rotate1 {
+            0% {
+                transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -webkit-transform: rotate(0deg);
+                transform-origin: 0 100%;
+            }
+            100% {
+                transform: rotate(90deg);
+                -moz-transform: rotate(90deg);
+                -webkit-transform: rotate(90deg);
+                transform-origin: 0 100%;
+            }
+        }
+        .first-lever-rotation {animation-name: lever-rotate1;}
+
+        @keyframes lever-rotate2 {
+            0% {
+                transform: rotate(90deg);
+                -moz-transform: rotate(90deg);
+                -webkit-transform: rotate(90deg);
+                transform-origin: 0 100%;
+            }
+            100% {
+                transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -webkit-transform: rotate(0deg);
+                transform-origin: 0 100%;
+            }
+        }
+        .second-lever-rotation {animation-name: lever-rotate2;}
+
+        #fiddle-slider-switch {
+            position: absolute;
+            width: 9px;
+            height: 9px;
+            background-image: url(img/fiddle-slider-switch.png);
+            top: 216px;
+            left: 237px;
+            z-index: 11;
+            cursor: pointer;
+            border-radius: 5px;
+            animation-duration: 0.5s;
+            animation-fill-mode: forwards;
+        }
+        @keyframes fiddle-slider5to4 { 0% {top: 216px} 100% {top: 178px} }
+        .fiddle-slider-move-a {animation-name: fiddle-slider5to4;}
+        @keyframes fiddle-slider4to3 { 0% {top: 178px} 100% {top: 141px} }
+        .fiddle-slider-move-b {animation-name: fiddle-slider4to3;}
+        @keyframes fiddle-slider3to2 { 0% {top: 141px} 100% {top: 103px} }
+        .fiddle-slider-move-c {animation-name: fiddle-slider3to2;}
+        @keyframes fiddle-slider2to1 { 0% {top: 103px} 100% {top: 64px} }
+        .fiddle-slider-move-d {animation-name: fiddle-slider2to1;}
+        @keyframes fiddle-slider1to2 { 0% {top: 64px} 100% {top: 103px} }
+        .fiddle-slider-move-e {animation-name: fiddle-slider1to2;}
+        @keyframes fiddle-slider2to3 { 0% {top: 103px} 100% {top: 141px} }
+        .fiddle-slider-move-f {animation-name: fiddle-slider2to3;}
+        @keyframes fiddle-slider3to4 { 0% {top: 141px} 100% {top: 178px} }
+        .fiddle-slider-move-g {animation-name: fiddle-slider3to4;}
+        @keyframes fiddle-slider4to5 { 0% {top: 178px} 100% {top: 216px} }
+        .fiddle-slider-move-h {animation-name: fiddle-slider4to5;}
+
+        .fiddle-button {
+            position: absolute;
+            z-index: 12;
+            cursor: pointer;
+            border-radius: 15px;
+        }
+        #fiddle-button-a {top: 73px;left: 175px;}
+        #fiddle-button-b {top: 73px;left: 204px;}
+        #fiddle-button-c {top: 115px;left: 175px;}
+        #fiddle-button-d {top: 115px;left: 204px;}
+        #fiddle-button-e {top: 159px;left: 175px;}
+        #fiddle-button-f {top: 159px;left: 204px;}
+        #fiddle-button-g {top: 202px;left: 175px;}
+        #fiddle-button-h {top: 202px;left: 204px;}
+    </style>
+    <script>
+        (function () {
+            'use strict';
+            const fiddleContainer = $("#fiddle-container");
+            const fiddleValue = $("#fiddle-value");
+            const fiddleStatus = $("#fiddle-status");
+            const fiddleWheel1 = $("#fiddle-wheel1");
+            const fiddleWheel2 = $("#fiddle-wheel2");
+            const fiddleLever1 = $("#fiddle-lever1");
+            const fiddleLever2 = $("#fiddle-lever2");
+            const fiddleLever3 = $("#fiddle-lever3");
+            const sliderSwitch = $("#fiddle-slider-switch");
+
+            const switchOff = "&&false";
+            const switchOn = "||true";
+            const toggle = "toggle";
+            const valueApplies = {
+                "lever": {
+                    0: {
+                        // State
+                        0: {
+                            0: switchOff, 1: switchOff,
+                            10: switchOff, 11: switchOff
+                        },
+                        1: {
+                            0: switchOn, 1: switchOn,
+                            10: switchOn, 11: switchOn
+                        }
+                    },
+                    1: {
+                        // State
+                        0: {
+                            4: switchOn, 5: switchOn,
+                            14: switchOn, 15: switchOn
+                        },
+                        1: {
+                            4: switchOff, 5: switchOff,
+                            14: switchOff, 15: switchOff
+                        }
+                    },
+                    2: {
+                        // State
+                        0: {
+                            8: switchOff, 9: switchOff,
+                            18: switchOff, 19: switchOff
+                        },
+                        1: {
+                            8: switchOn, 9: switchOn,
+                            18: switchOn, 19: switchOn
+                        }
+                    }
+                },
+                "slider": {
+                    // 5 to 1
+                    0: {8: switchOn, 9: switchOn},
+                    1: {16: switchOn, 17: switchOn},
+                    2: {4: switchOff, 5: switchOff},
+                    3: {12: switchOn, 13: switchOn},
+                    4: {0: switchOn, 1: switchOn},
+                    // 1 to 5
+                    5: {10: switchOff, 11: switchOff},
+                    6: {2: switchOff, 3: switchOff},
+                    7: {14: switchOn, 15: switchOn},
+                    8: {6: switchOff, 7: switchOff},
+                    9: {18: switchOff, 19: switchOff},
+                },
+                "wheel": {
+                    0: {
+                        // State
+                        0: {
+                            0: toggle, 1: toggle, 2: switchOn, 3: toggle, 4: toggle,
+                            10: switchOn, 11: switchOff, 12: switchOff, 13: switchOff, 14: switchOn,
+                        },
+                        1: {
+                            0: switchOn, 1: switchOff, 2: switchOff, 3: switchOff, 4: switchOn,
+                            10: toggle, 11: toggle, 12: switchOn, 13: toggle, 14: toggle,
+                        }
+                    },
+                    1: {
+                        // State
+                        0: {
+                            0: switchOff, 1: switchOff, 2: switchOn, 3: switchOff, 4: switchOff,
+                            10: switchOn, 11: switchOff, 12: switchOff, 13: switchOff, 14: switchOn,
+                        },
+                        1: {
+                            0: switchOn, 1: switchOff, 2: switchOff, 3: switchOff, 4: switchOn,
+                            10: switchOff, 11: switchOff, 12: switchOn, 13: switchOff, 14: switchOff,
+                        }
+                    }
+                },
+                "button": {
+                    // Pairs
+                    0: {
+                        // State
+                        0: {
+                            0: toggle,
+                            7: toggle,
+                            13: toggle,
+                            15: toggle,
+                            3: toggle
+                        },
+                        1: {
+                            1: toggle,
+                            2: toggle,
+                            5: toggle,
+                            8: toggle,
+                            12: toggle,
+                            18: toggle
+                        }
+                    },
+                    1: {
+                        // State
+                        0: {
+                            11: switchOff,
+                            12: toggle,
+                            4: toggle,
+                            6: toggle,
+                            7: switchOff,
+                            19: toggle
+                        },
+                        1: {
+                            11: toggle,
+                            12: toggle,
+                            4: switchOff,
+                            6: toggle,
+                            7: toggle,
+                            19: switchOff
+                        }
+                    },
+                    2: {
+                        // State
+                        0: {
+                            8: switchOn,
+                            3: switchOff,
+                            5: toggle,
+                            18: switchOn,
+                            13: switchOff,
+                            15: toggle
+                        },
+                        1: {
+                            8: switchOff,
+                            3: switchOn,
+                            5: toggle,
+                            18: switchOff,
+                            13: switchOn,
+                            15: toggle
+                        }
+                    },
+                    3: {
+                        // State
+                        0: {
+                            0: toggle,
+                            1: toggle,
+                            2: toggle,
+                            3: toggle,
+                            4: toggle,
+                            5: toggle,
+                            6: toggle,
+                            7: toggle,
+                            8: toggle,
+                            9: toggle
+                        },
+                        1: {
+                            10: toggle,
+                            11: toggle,
+                            12: toggle,
+                            13: toggle,
+                            14: toggle,
+                            15: toggle,
+                            16: toggle,
+                            17: toggle,
+                            18: toggle,
+                            19: toggle
+                        }
+                    }
+                }
+            };
+
+            function executeValueApplies(applies) {
+                console.log(applies);
+                for(let key in applies) {
+                    const appliesValue = applies[key];
+
+                    if (appliesValue === toggle) {
+                        toggleLight(key);
+                    } else {
+                        const value = getLightValue(key);
+                        // e.g. "undefined||true" = true; "false&&true" = false;
+                        const result = eval(String(value) + appliesValue);
+                        if(Boolean(value) !== Boolean(result)) {
+                            toggleLight(key);
+                        }
+                    }
+
+                }
+            }
+
+            const arrValues = [];
+            for (let i = 0; i < 20; i++) {
+                arrValues.push(5);
+            }
+            for (let i = 0; i < 100; i++) {
+                const idx1 = Math.trunc(Math.random() * arrValues.length);
+                const idx2 = Math.trunc(Math.random() * arrValues.length);
+                const amt = Math.trunc(Math.random() * 3) + 1;
+                const v1 = arrValues[idx1];
+
+                if (v1 - amt < 1) {
+                    arrValues[idx2] += v1 - 1;
+                    arrValues[idx1] = 1;
+                } else {
+                    arrValues[idx1] -= amt;
+                    arrValues[idx2] += amt;
+                }
+            }
+
+            // Add indicator lights
+            // Easier to calculate position
+            let lightId = 0;
+            for (let i = 0; i < 2; i++) {
+                for (let j = 0; j < 10; j++) {
+                    const top = 19 + (15 * j) + (7 * j);
+                    const left = 18 + (15 * i) + (7 * i);
+
+                    fiddleContainer.append("<img src='img/fiddle-indicator-off2.png' class='fiddle-ind' id='fiddle-ind-" + lightId + "' style='top:" + top + "px;left:" + left + "px;'>");
+
+                    const volumeAmt = arrValues[lightId];
+
+                    $("#fiddle-ind-" + lightId)
+                        .data("volume", volumeAmt)
+                        .attr("title", "Volume: " + volumeAmt);
+
+                    lightId++;
+                }
+            }
+
+            function getLightValue(index) {
+                return $("#fiddle-ind-" + index).data("state");
+            }
+            function toggleLight(index) {
+                const light = $("#fiddle-ind-" + index);
+                const state = light.data("state");
+
+                if (!state) {
+                    light.data("state", true);
+                    light.attr("src", "img/fiddle-indicator-on.png");
+                } else {
+                    light.data("state", false);
+                    light.attr("src", "img/fiddle-indicator-off2.png");
+                }
+                updateStatus();
+            }
+
+            function updateStatus() {
+                let total = 0;
+                for (let i = 0; i < 20; i++) {
+                    const light = $("#fiddle-ind-" + i);
+
+                    if (light.data("state")) {
+                        total += light.data("volume");
+                    }
+                }
+
+                fiddleValue.val(total);
+                fiddleStatus.text("You're volume is at " + total + "%")
+            }
+
+            updateStatus();
+
+            function applyWheelRotation(element, applies) {
+                const handle = element.find(".handle");
+
+                const animationOrder = ["first-wheel-rotation", "second-wheel-rotation"];
+                let toggle = 0;
+                let previousClass = "";
+                handle.on("click", function () {
+                    const animClass = animationOrder[toggle % 2];
+
+                    element.addClass(animClass);
+                    element.removeClass(previousClass);
+
+                    previousClass = animClass;
+                    toggle++;
+
+                    executeValueApplies(applies[toggle % 2])
+                });
+            }
+            applyWheelRotation(fiddleWheel1, valueApplies.wheel["0"]);
+            applyWheelRotation(fiddleWheel2, valueApplies.wheel["1"]);
+
+            function applyLeverRotation(element, applies) {
+                const handle = element.find(".handle");
+
+                const animationOrder = ["first-lever-rotation", "second-lever-rotation"];
+                let toggle = 0;
+                let previousClass = "";
+                handle.on("click", function () {
+                    const animIndex = toggle % 2;
+                    const animClass = animationOrder[animIndex];
+
+                    element.addClass(animClass);
+                    element.removeClass(previousClass);
+
+                    previousClass = animClass;
+                    toggle++;
+
+                    executeValueApplies(applies[toggle % 2]);
+                });
+            }
+            applyLeverRotation(fiddleLever1, valueApplies.lever["0"]);
+            applyLeverRotation(fiddleLever2, valueApplies.lever["1"]);
+            applyLeverRotation(fiddleLever3, valueApplies.lever["2"]);
+
+            function applySliderSwitch(element) {
+                const animationOrder = ["a", "b", "c", "d", "e", "f", "g", "h"];
+                let toggle = 0;
+                let previousClass = "";
+                element.on("click", function () {
+                    const animClass = "fiddle-slider-move-" + animationOrder[toggle % animationOrder.length];
+
+                    element.addClass(animClass);
+                    element.removeClass(previousClass);
+
+                    previousClass = animClass;
+                    toggle++;
+
+                    executeValueApplies(valueApplies.slider[toggle % animationOrder.length])
+                });
+            }
+            applySliderSwitch(sliderSwitch);
+
+            const srcBtnOn = "img/fiddle-btn-on.png";
+            const srcBtnOnPressed = "img/fiddle-btn-on-pressed.png";
+            const srcBtnOff = "img/fiddle-btn-off.png";
+            const srcBtnOffPressed = "img/fiddle-btn-off-pressed.png";
+
+            function applyButtonPair(btnId1, btnId2, applies) {
+                const button1 = $("#fiddle-button-" + btnId1);
+                button1.data("enabled", true);
+                button1.attr("src", srcBtnOn);
+                const button2 = $("#fiddle-button-" + btnId2);
+                button2.data("enabled", false);
+                button2.attr("src", srcBtnOff);
+
+                let toggle = 0;
+                function buttonPressLogic(buttonElement, otherButton) {
+                    buttonElement.on('mousedown', function () {
+                        if (buttonElement.data("enabled")) {
+                            buttonElement.attr("src", srcBtnOnPressed);
+                        } else {
+                            buttonElement.attr("src", srcBtnOffPressed);
+                        }
+                    });
+                    buttonElement.on('mouseup', function () {
+                        if (buttonElement.data("enabled")) {
+                            buttonElement.attr("src", srcBtnOn);
+                        } else {
+                            buttonElement.attr("src", srcBtnOn);
+                            buttonElement.data("enabled", true);
+                            otherButton.attr("src", srcBtnOff);
+                            otherButton.data("enabled", false);
+
+                            toggle++;
+
+                            executeValueApplies(applies[toggle % 2]);
+                        }
+                    });
+                }
+                buttonPressLogic(button1, button2);
+                buttonPressLogic(button2, button1);
+            }
+            applyButtonPair("a", "h", valueApplies.button["0"]);
+            applyButtonPair("c", "f", valueApplies.button["1"]);
+            applyButtonPair("e", "d", valueApplies.button["2"]);
+            applyButtonPair("g", "b", valueApplies.button["3"]);
+        })()
+    </script>
+    <hr>
+</div>

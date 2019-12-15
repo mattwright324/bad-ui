@@ -1,0 +1,57 @@
+<div class="column">
+    <h5 id="phone-dropdown">Phone Dropdown</h5>
+    <p>
+        Looks easy, right?
+    </p>
+    <div class="row">
+        <div class="two columns">
+            <label>Phone</label>
+            <select id="phoneFirstSet" class="u-full-width">
+                <script>
+                    for (let i = 0; i <= 999; i++) {
+                        const padded = global.leftPad(i, "0", 3);
+                        document.write("<option value='" + padded + "'>" + padded + "</option>")
+                    }
+                </script>
+            </select>
+        </div>
+        <div class="three columns">
+            <label>&nbsp;</label>
+            <select id="phoneSecondSet" class="u-full-width">
+                <script>
+                    for (let i = 0; i <= 999; i++) {
+                        const padded = global.leftPad(i, "0", 3);
+                        document.write("<option value='" + padded + "'>" + padded + "</option>")
+                    }
+                </script>
+            </select>
+        </div>
+        <div class="three columns">
+            <label>&nbsp;</label>
+            <select id="phoneThirdSet" class="u-full-width">
+                <script>
+                    let values = [];
+                    for (let i = 0; i <= 9999; i++) {
+                        const padded = global.leftPad(i, "0", 4);
+                        values.push(padded);
+                    }
+
+                    values = global.shuffleArray(values);
+
+                    for (let i = 0; i < values.length; i++) {
+                        const padded = values[i];
+                        document.write("<option value='" + padded + "'>" + padded + "</option>")
+                    }
+                </script>
+            </select>
+        </div>
+    </div>
+    <p>
+        Dropdown is slow to open in Firefox.
+    </p>
+    <script>
+        global.randomizeChildren("#phoneFirstSet");
+        global.randomizeChildren("#phoneSecondSet");
+    </script>
+    <hr>
+</div>

@@ -1,0 +1,100 @@
+<div class="column">
+    <h5 id="roll-the-date">Roll the Date</h5>
+    <p>
+        Shake as best you can!
+    </p>
+    <div class="row">
+        <div class="four columns">
+            <label>Birthday</label>
+            <input id="rolledDate" class="u-full-width" type="text" value="1990-01-01" style="border:none"
+                   disabled>
+        </div>
+    </div>
+    <div class="row">
+        <span id="firstDice" class="dice dice-1" title="Dice 1" data-value="1"></span>
+        <span id="secondDice" class="dice dice-2" title="Dice 2" data-value="2"></span>
+        <style>
+            .dice {
+                font-size: 2.5em;
+                margin-right: 5px;
+            }
+        </style>
+    </div>
+    <div class="row">
+        <div class="three columns">
+            <label>Unit</label>
+            <select id="unitSelect" class="u-full-width">
+                <option value="years" selected>Year</option>
+                <option value="months">Month</option>
+                <option value="days">Day</option>
+            </select>
+        </div>
+        <div class="nine columns">
+            <label>&nbsp;</label>
+            <div class="row">
+                <button id="rollMinus" class="button-primary">Roll and Minus</button>
+                <button id="rollAdd" class="button-primary">Roll and Add</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            'use strict';
+
+            const dice = ["dice-1", "dice-2", "dice-3", "dice-4", "dice-5", "dice-6"];
+            const outputRolledDate = $("#rolledDate");
+            const selectUnit = $("#unitSelect");
+            const btnRollMinus = $("#rollMinus");
+            const btnRollAdd = $("#rollAdd");
+            const firstDice = $("#firstDice");
+            const secondDice = $("#secondDice");
+
+            function setDiceClass(element, dieIndex) {
+                dieIndex = Math.trunc(dieIndex);
+                for (let i = 0; i < dice.length; i++) {
+                    element.removeClass(dice[i]);
+                }
+                element.effect("shake", {}, 500);
+                element.addClass(dice[dieIndex]);
+                element.data("value", dieIndex + 1)
+            }
+
+            function roll(time, times, callback) {
+                console.log(time);
+                if (time < times) {
+                    const firstIndex = Math.random() * dice.length;
+                    const secondIndex = Math.random() * dice.length;
+
+                    setDiceClass(firstDice, firstIndex);
+                    setDiceClass(secondDice, secondIndex);
+
+                    setTimeout(function () {
+                        roll(time + 1, times, callback);
+                    }, 500);
+                } else {
+                    callback();
+                }
+            }
+
+            function doRoll(state) {
+                roll(0, 3, function () {
+                    const first = firstDice.data("value");
+                    const second = secondDice.data("value");
+                    const amount = (first + second) * state;
+                    const unit = selectUnit.find(":selected").val();
+                    const currentDate = moment(new Date(outputRolledDate.val()));
+
+                    outputRolledDate.val(currentDate.add(amount, unit).format("YYYY-MM-DD"));
+                });
+            }
+
+            btnRollMinus.on('click', function () {
+                doRoll(-1)
+            });
+            btnRollAdd.on('click', function () {
+                doRoll(1)
+            });
+        })()
+    </script>
+    <hr>
+</div>

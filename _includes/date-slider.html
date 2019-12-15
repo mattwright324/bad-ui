@@ -1,0 +1,38 @@
+<div class="column">
+    <h5 id="date-slider">Date Slider</h5>
+    <p>
+        How precise is your mouse?
+    </p>
+    <div class="row">
+        <div class="four columns">
+            <label>Birthday</label>
+            <input id="dateSlider" class="u-full-width" type="range">
+        </div>
+        <div class="eight columns">
+            <label>&nbsp;</label>
+            <input id="sliderValue" class="u-full-width" type="text" value="..." style="border:none"
+                   disabled>
+        </div>
+    </div>
+    <script>
+        (function () {
+            'use strict';
+            const inputDateSlider = $("#dateSlider");
+            const outputSliderValue = $("#sliderValue");
+
+            inputDateSlider.attr("min", Number(new Date("1900-01-01")));
+            inputDateSlider.attr("max", Number(new Date()));
+
+            function determineDate() {
+                const millis = Number(inputDateSlider.val());
+                const date = new Date(millis);
+
+                outputSliderValue.val(moment(date).format("YYYY-MM-DD"))
+            }
+
+            inputDateSlider.on('change mousemove', determineDate);
+            determineDate();
+        })()
+    </script>
+    <hr>
+</div>

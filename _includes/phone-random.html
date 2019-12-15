@@ -1,0 +1,33 @@
+<div class="column">
+    <h5 id="random-phone">Random phone</h5>
+    <p>
+        Is this your phone number?
+    </p>
+    <div class="row">
+        <div class="four columns">
+            <label>Phone</label>
+            <input id="randomPhone" class="u-full-width" type="text" value="555-123-4567" disabled>
+        </div>
+    </div>
+    <button id="nextPhone" class="button-primary">Next</button>
+    <script>
+        (function () {
+            'use strict';
+
+            const outputRandomPhone = $("#randomPhone");
+            const btnRandomPhone = $("#nextPhone");
+
+            function random(number) {
+                return Math.floor(Math.random() * number);
+            }
+
+            function nextPhone() {
+                outputRandomPhone.val(phone.toUSString(random(9999999999)));
+            }
+
+            btnRandomPhone.on('click', nextPhone);
+            nextPhone();
+        })();
+    </script>
+    <hr>
+</div>

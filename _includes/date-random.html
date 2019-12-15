@@ -1,0 +1,69 @@
+<div class="column">
+    <h5 id="random-date">Random date</h5>
+    <p>
+        Is this your birthdate?
+    </p>
+    <div class="row">
+        <div class="four columns">
+            <label>Birthday</label>
+            <input id="randomDate" class="u-full-width" type="text" value="..." disabled>
+        </div>
+        <div class="eight columns">
+            <label>&nbsp;</label>
+            <input id="yourAge" class="u-full-width" type="text" style="border:none" disabled>
+        </div>
+        <button id="nextDate" class="button-primary">Next</button>
+    </div>
+    <script>
+        (function () {
+            'use strict';
+
+            const outputRandomDate = $("#randomDate");
+            const btnRandomDate = $("#nextDate");
+            const yourAge = $("#yourAge");
+
+            function random(number) {
+                return Math.floor(Math.random() * number);
+            }
+
+            function nextDate() {
+                let year = random(9999);
+                let month = random(12);
+                let day = random(31);
+
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                while (String(year).length < 4) {
+                    year = "0" + year;
+                }
+
+                const dateString = year + "-" + month + "-" + day;
+                const date = new Date(dateString);
+
+                if (isNaN(date)) {
+                    // Not valid, try again
+                    nextDate();
+                } else {
+                    const now = moment(new Date());
+                    const years = now.diff(date, 'year');
+
+                    outputRandomDate.val(dateString);
+
+                    if (now.isBefore(date)) {
+                        yourAge.val("You haven't been born yet!");
+                    } else {
+                        yourAge.val("You're " + years + " years old!")
+                    }
+                }
+            }
+
+            btnRandomDate.on('click', nextDate);
+            nextDate();
+        })();
+    </script>
+    <hr>
+</div>

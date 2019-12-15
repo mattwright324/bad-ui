@@ -1,0 +1,84 @@
+<div class="column">
+    <h5 id="boomerang-phone">Phone Boomerang</h5>
+    <p>
+        Time your choice.
+    </p>
+    <div class="row">
+        <div class="four columns">
+            <label>Phone</label>
+            <input id="boomerangPhoneSlider" class="u-full-width" type="range" disabled>
+        </div>
+        <div class="eight columns">
+            <label>&nbsp;</label>
+            <input id="boomerangPhoneValue" class="u-full-width" type="text" value="..." style="border:none"
+                   disabled>
+        </div>
+    </div>
+    <p id="boomerangPhonePickValue">
+        You haven't picked a number yet.
+    </p>
+    <div class="row">
+        <div class="two columns">
+            <button id="boomerangPhonePick" class="button-primary">Pick</button>
+        </div>
+        <div class="three columns">
+            <select id="boomerangPhoneSpeed" class="u-full-width">
+                <option value="10">Slow</option>
+                <option value="100000" selected>Medium</option>
+                <option value="10000000">Fast</option>
+                <option value="100000000">Super Fast</option>
+            </select>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+            const inputBoomerangSlider = $("#boomerangPhoneSlider");
+            const outputSliderValue = $("#boomerangPhoneValue");
+            const btnBoomerangPick = $("#boomerangPhonePick");
+            const outputBoomerangPickValue = $("#boomerangPhonePickValue");
+            const selectBoomerangSpeed = $("#boomerangPhoneSpeed");
+
+            inputBoomerangSlider.attr("min", 0);
+            inputBoomerangSlider.attr("max", 9999999999);
+
+            function getSliderSpeed() {
+                return Number(selectBoomerangSpeed.find(":selected").val());
+            }
+
+            function getSliderPhone() {
+                return phone.toUSString(inputBoomerangSlider.val());
+            }
+
+            function determinePhone() {
+                outputSliderValue.val(getSliderPhone())
+            }
+
+            inputBoomerangSlider.on('change mousemove', determinePhone);
+            determinePhone();
+
+            btnBoomerangPick.on('click', function () {
+                outputBoomerangPickValue.text("You're phone number is " + getSliderPhone())
+            });
+
+            let direction = 1;
+            setInterval(function () {
+                const min = Number(inputBoomerangSlider.attr("min"));
+                const max = Number(inputBoomerangSlider.attr("max"));
+                const value = Number(inputBoomerangSlider.val());
+
+                const nextValue = value + (Math.random() * direction * getSliderSpeed());
+                if (nextValue >= max) {
+                    direction = -1;
+                } else if (nextValue <= min) {
+                    direction = 1;
+                } else {
+                    inputBoomerangSlider.val(nextValue);
+                }
+                determinePhone();
+            }, 0.5);
+        })()
+    </script>
+    <hr>
+</div>
