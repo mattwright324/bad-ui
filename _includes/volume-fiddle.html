@@ -5,7 +5,7 @@
     </p>
     <div class="columns twelve" style="margin-bottom: 4%;">
         <div id="fiddle-container">
-            <img class="fiddle-base" draggable="false" src="img/fiddle-base.png">
+            <img class="fiddle-base" draggable="false" src="./img/fiddle-base.png">
             <progress id="fiddle-value" min="0" max="100" value="0"></progress>
             <div id="fiddle-wheel1" class="fiddle-wheel">
                 <div class='handle'></div>
@@ -86,7 +86,7 @@
 
         .fiddle-wheel {
             position: absolute;
-            background-image: url(/img/fiddle-wheel2.png);
+            background-image: url(./img/fiddle-wheel2.png);
             width: 35px;
             height: 35px;
             align-content: center;
@@ -151,7 +151,7 @@
 
         .fiddle-lever {
             position: absolute;
-            background-image: url(img/fiddle-lever2.png);
+            background-image: url(./img/fiddle-lever2.png);
             width: 25px;
             height: 24px;
             z-index: 9;
@@ -221,7 +221,7 @@
             position: absolute;
             width: 9px;
             height: 9px;
-            background-image: url(img/fiddle-slider-switch.png);
+            background-image: url(./img/fiddle-slider-switch.png);
             top: 216px;
             left: 237px;
             z-index: 11;
@@ -486,7 +486,7 @@
                     const top = 19 + (15 * j) + (7 * j);
                     const left = 18 + (15 * i) + (7 * i);
 
-                    fiddleContainer.append("<img src='img/fiddle-indicator-off2.png' class='fiddle-ind' id='fiddle-ind-" + lightId + "' style='top:" + top + "px;left:" + left + "px;'>");
+                    fiddleContainer.append("<img src='./img/fiddle-indicator-off2.png' class='fiddle-ind' id='fiddle-ind-" + lightId + "' style='top:" + top + "px;left:" + left + "px;'>");
 
                     const volumeAmt = arrValues[lightId];
 
@@ -507,10 +507,10 @@
 
                 if (!state) {
                     light.data("state", true);
-                    light.attr("src", "img/fiddle-indicator-on.png");
+                    light.attr("src", "./img/fiddle-indicator-on.png");
                 } else {
                     light.data("state", false);
-                    light.attr("src", "img/fiddle-indicator-off2.png");
+                    light.attr("src", "./img/fiddle-indicator-off2.png");
                 }
                 updateStatus();
             }
@@ -593,10 +593,10 @@
             }
             applySliderSwitch(sliderSwitch);
 
-            const srcBtnOn = "img/fiddle-btn-on.png";
-            const srcBtnOnPressed = "img/fiddle-btn-on-pressed.png";
-            const srcBtnOff = "img/fiddle-btn-off.png";
-            const srcBtnOffPressed = "img/fiddle-btn-off-pressed.png";
+            const srcBtnOn = "./img/fiddle-btn-on.png";
+            const srcBtnOnPressed = "./img/fiddle-btn-on-pressed.png";
+            const srcBtnOff = "./img/fiddle-btn-off.png";
+            const srcBtnOffPressed = "./img/fiddle-btn-off-pressed.png";
 
             function applyButtonPair(btnId1, btnId2, applies) {
                 const button1 = $("#fiddle-button-" + btnId1);
