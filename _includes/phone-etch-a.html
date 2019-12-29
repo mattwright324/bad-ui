@@ -1,0 +1,213 @@
+<div class="column">
+    <h5 id="etch-a-phone">Etch-a-Phone</h5>
+    <p>
+        Etch your number with OCR!
+    </p>
+    <div class="row" style="margin: 0;">
+        <div class="columns four" style="margin-bottom:4%;">
+            <div id="etch-container">
+                <canvas id="etch-canvas" width="160" height="160"></canvas>
+                <div id="etch-dial-x" class="etch-dial"></div>
+                <div id="etch-dial-y" class="etch-dial"></div>
+            </div>
+        </div>
+        <div class="columns eight">
+            <p id="etch-comment" style="color:lightgray">Click and rotate the dials!</p>
+        </div>
+    </div>
+
+    <p>
+        <button id="etch-submit" class="button-primary etch-button" disabled>Submit Etch</button>
+        <button id="etch-clear" class="button etch-button">Clear Etch</button>
+        <button id="etch-backspace" class="button etch-button">Backspace</button>
+    </p>
+    <p>
+        You're number is +1 <span id="etch-number">(___) ____</span>
+    </p>
+    <style>
+        #etch-container {
+            position: relative;
+            width: 200px;
+            height: 220px;
+            border: 1px solid darkred;
+            background-color: red;
+            border-radius: 10px;
+            user-select: none;
+            z-index: 10;
+        }
+        #etch-canvas {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            user-select: none;
+            border-radius: 4px;
+            z-index: 11;
+        }
+        .etch-dial {
+            position: absolute;
+            background-image: url(./img/etch-dial.png);
+            width: 30px;
+            height: 30px;
+            z-index: 12;
+            cursor: grab;
+        }
+        #etch-dial-x {
+            top: 183px;
+            left: 20px;
+        }
+        #etch-dial-y {
+            top: 183px;
+            right: 20px;
+        }
+    </style>
+    <script>
+        (function() {
+            'use strict';
+
+            const btnSubmit = $("#etch-submit");
+            const btnClear = $("#etch-clear");
+            const btnBackspace = $("#etch-backspace");
+            const etchComment = $("#etch-comment");
+            const etchNumber = $("#etch-number");
+
+            const etchDialX = $("#etch-dial-x");
+            const etchDialY = $("#etch-dial-y");
+
+            let point = {
+                x: 80,
+                y: 80
+            };
+            let number = "";
+
+            function applyDialInteraction(element, axis, direction) {
+                let previousAngle = 0;
+                element.propeller({
+                    onMouseLeave: false,
+                    onRotate: function() {
+                        const mod = {x: 0, y: 0};
+
+                        const angle = this.angle;
+                        if (angle > previousAngle) {
+                            mod[axis] = 1 * direction;
+                        } else {
+                            mod[axis] = -1 * direction;
+                        }
+
+                        let newX = point.x + mod.x;
+                        if (newX > canvas.width) {
+                            newX = canvas.width;
+                        } else if (newX < 0) {
+                            newX = 0;
+                        }
+
+                        let newY = point.y + mod.y;
+                        if (newY > canvas.height) {
+                            newY = canvas.height;
+                        } else if (newY < 0) {
+                            newY = 0;
+                        }
+
+                        previousAngle = angle;
+                        drawTo({x: newX, y: newY})
+                    }
+                });
+            }
+            applyDialInteraction(etchDialX, 'x', 1);
+            applyDialInteraction(etchDialY, 'y', -1);
+
+            const canvas = document.getElementById('etch-canvas');
+            const context = canvas.getContext('2d');
+
+            const bg = new Image(canvas.width, canvas.height);
+            bg.src = "./img/etch-canvas-bg.png";
+            bg.onload = function() {
+                drawBase();
+            };
+
+            function drawBase() {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.beginPath();
+                context.globalAlpha = 1;
+                context.drawImage(bg, 0, 0, canvas.width, canvas.height);
+
+                context.globalAlpha = 0.5;
+                context.fillStyle = "darkgray";
+                context.moveTo(point.x, point.y);
+                context.lineTo(point.x+1, point.y+1);
+                context.stroke();
+            }
+            btnClear.on('click', drawBase);
+
+            function drawTo(newPoint) {
+                context.moveTo(point.x, point.y);
+                context.lineTo(newPoint.x, newPoint.y);
+                context.stroke();
+
+                point = newPoint;
+            }
+
+            const worker = new Tesseract.createWorker();
+            async function loadOCR() {
+                await worker.load();
+                await worker.loadLanguage('eng');
+                await worker.initialize('eng');
+                await worker.setParameters({
+                    tessedit_char_whitelist: " 0123456789",
+                    tessedit_pageseg_mode: "10"
+                });
+                btnSubmit.attr("disabled", false);
+            }
+            loadOCR();
+
+
+            function submitNumber(char) {
+                if (number.length + 1 > 10) {
+                    etchComment.text("You're number is full, use backspace.");
+                    return;
+                }
+
+                number += String(char);
+
+                formatNumber();
+            }
+
+            function backspace() {
+                if (number.length) {
+                    number = number.substr(0, number.length - 1);
+                }
+
+                formatNumber();
+            }
+            btnBackspace.on('click', backspace);
+
+            function formatNumber() {
+                const firstThree = number.substr(0, 3).padEnd(3, "_");
+                const middleThree = number.substr(3, 3).padEnd(3, "_");
+                const lastFour = number.substr(6, 4).padEnd(4, "_");
+
+                const formatted = "(" + firstThree +") " + middleThree + "-" + lastFour;
+
+                etchNumber.text(formatted);
+            }
+
+            async function submitEtch() {
+                btnSubmit.attr("disabled", true);
+
+                const { data } = await worker.recognize(canvas);
+                const char = data.text.substr(0, 1);
+
+                if (char) {
+                    etchComment.text("That looked like a '" + char + "'");
+
+                    submitNumber(char);
+                } else {
+                    etchComment.text("Oops, didn't recognize that.");
+                }
+
+                btnSubmit.attr("disabled", false);
+            }
+            btnSubmit.on('click', submitEtch);
+        })()
+    </script>
+    <hr>
+</div>
