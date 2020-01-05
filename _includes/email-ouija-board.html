@@ -1,0 +1,186 @@
+<div class="column">
+    <h5 id="ouija-email">Ouija Email</h5>
+    <p>
+        Who you gonna mail?
+    </p>
+    <div class="row" style="margin: 0;">
+        <div class="twelve columns" style="margin-bottom:4%;">
+            <div id="ouija-container">
+                <div id="ouija-planchette"></div>
+            </div>
+        </div>
+        <div class="six columns" style="margin:0">
+            <label>Email</label>
+            <input id="oujia-email-value" class="u-full-width" type="text" value="" disabled>
+            <div class="row">
+                <button id="oujia-add" class="button-primary">Add</button>
+                <button id="oujia-clear" class="button">Clear</button>
+            </div>
+        </div>
+    </div>
+    <style>
+        #ouija-container {
+            background: url("./img/email_ouija_board.png");
+            background-size: cover;
+            width: 300px;
+            height: 200px;
+            position: relative;
+            z-index: 10;
+        }
+        #ouija-planchette {
+            position: absolute;
+            background: url("./img/ouija_planchette.png");
+            background-size: cover;
+            width: 60px;
+            height: 85px;
+            z-index: 11;
+            top: 80px;
+            left: 121px;
+            cursor: grab;
+        }
+    </style>
+    <script>
+        (function() {
+            'use strict';
+
+            const ouijaEmail = $("#oujia-email-value");
+            const btnAdd = $("#oujia-add");
+            const btnClear = $("#oujia-clear");
+            const planchette = $("#ouija-planchette");
+            btnAdd.attr("disabled", true);
+
+            const charMap = {
+                "a": {top: "47px", left: "-1px"},
+                "b": {top: "34px", left: "19px"},
+                "c": {top: "26px", left: "38px"},
+                "d": {top: "20px", left: "56px"},
+                "e": {top: "16px", left: "76px"},
+                "f": {top: "13px", left: "99px"},
+                "g": {top: "13px", left: "117px"},
+                "h": {top: "13px", left: "140px"},
+                "i": {top: "14px", left: "158px"},
+                "j": {top: "17px", left: "174px"},
+                "k": {top: "23px", left: "194px"},
+                "l": {top: "32px", left: "214px"},
+                "m": {top: "41px", left: "237px"},
+                "n": {top: "84px", left: "2px"},
+                "o": {top: "72px", left: "19px"},
+                "p": {top: "62px", left: "35px"},
+                "q": {top: "54px", left: "56px"},
+                "r": {top: "48px", left: "76px"},
+                "s": {top: "43px", left: "96px"},
+                "t": {top: "41px", left: "116px"},
+                "u": {top: "42px", left: "135px"},
+                "v": {top: "45px", left: "159px"},
+                "w": {top: "50px", left: "181px"},
+                "x": {top: "60px", left: "202px"},
+                "y": {top: "70px", left: "222px"},
+                "z": {top: "84px", left: "238px"},
+                "@": {top: "80px", left: "105px"},
+                ".": {top: "80px", left: "140px"},
+                "1": {top: "113px", left: "42px"},
+                "2": {top: "113px", left: "56px"},
+                "3": {top: "113px", left: "72px"},
+                "4": {top: "113px", left: "92px"},
+                "5": {top: "113px", left: "110px"},
+                "6": {top: "113px", left: "126px"},
+                "7": {top: "113px", left: "145px"},
+                "8": {top: "113px", left: "162px"},
+                "9": {top: "113px", left: "180px"},
+                "0": {top: "113px", left: "196px"}
+            };
+
+            const phrases = global.shuffleArray([
+                "help me.",
+                "40.735123,n73.932189",
+                "im stuck in this input.",
+                "4 nymphs blitz quick vex dwarf jog.",
+                "2 big fjords vex quick waltz nymph.",
+                "call 8675309",
+                "8 fox nymphs grab 1 quick jived waltz.",
+                "sex charged fop blew my junk TV quiz.",
+                "pack my box with five dozen liquor jugs.",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "0"
+            ]);
+            console.log(phrases);
+
+            const keys = [];
+            for (let key in charMap) {
+                keys.push(key);
+            }
+            console.log(keys);
+
+            let key = "";
+            let p = 0;
+            let i = 0;
+            let animating = false;
+            planchette.on('mousedown pointerdown touchstart', function(e) {
+                e.preventDefault();
+                //console.log("mousedown");
+                if (animating) {
+                    return;
+                }
+
+                planchette.css("cursor", "grabbing");
+
+                animating = true;
+                key = phrases[p].toLowerCase()
+                    .replace(/[^0-9a-z.@]/g, '@')
+                    .charAt(i);
+                const position = charMap[key];
+
+                //console.log("key '" + key + "' to " + JSON.stringify(position));
+
+                planchette.animate(position, {
+                    duration: 2000,
+                    start: function() {
+                        btnAdd.attr("disabled", true);
+                    },
+                    progress: function() {
+                        const left = planchette.css("left").replace("px", "");
+                        const zdeg = (left - ((300 - planchette.width()) / 2)) / 2.5;
+
+                        planchette.css("transform", "rotateZ("+zdeg+"deg)");
+                    },
+                    done: function() {
+                        btnAdd.attr("disabled", false);
+                        animating = false;
+                        i++;
+                        if (i >= phrases[p].length) {
+                            i = 0;
+                            p = (p + 1) % phrases.length;
+                        }
+                        //console.log('done');
+                    },
+                    fail: function() {
+                        animating = false;
+                        //console.log('fail');
+                    }
+                });
+            });
+            planchette.on('pointerup pointerleave mouseup mouseleave touchstop touchleave', function(e) {
+                planchette.stop();
+                planchette.css("cursor", "grab");
+            });
+
+            let email = "";
+            btnAdd.on('click', function() {
+                ouijaEmail.val(ouijaEmail.val() + String(key));
+            });
+            btnClear.on('click', function() {
+                email = "";
+                ouijaEmail.val("");
+            })
+        })()
+    </script>
+    <hr>
+</div>

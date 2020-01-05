@@ -16,6 +16,8 @@
  *      Inspired by Brian Gonzalez
  *
  *  Note (b5a0ebf): Modified version to support dragging outside element
+ *  Note (12/31/2019): Modified version to support pendulum-like behavior
+ *      just add behavior: 'pendulum' to the options list
  */
 
 ;
@@ -32,9 +34,12 @@
         step: 0,
         stepTransitionTime: 0,
         stepTransitionEasing: 'linear',
-        onMouseLeave: true,
+        onMouseLeave: false,
         rotateParentInstantly: false,
-        touchElement: null
+        touchElement: null,
+        behavior: 'rotate',
+        pendulumAngle: 90,
+        pendulumOffset: 270
     };
 
     var Propeller = function (element, options) {
@@ -242,10 +247,20 @@
 
     p.normalizeAngle = function (angle) {
         var result = angle;
-        result = result % 360;
-        if (result < 0) {
-            result = 360 + result;
+
+        if (this.behavior === 'rotate') {
+            result = result % 360;
+            if (result < 0) {
+                result = 360 + result;
+            }
+        } else if(this.behavior === 'pendulum') {
+            var half = this.pendulumAngle / 2;
+            result = (Math.sin(result / 360) * half + this.pendulumAngle) + this.pendulumOffset;
+            if (result < 0) {
+                result = this.pendulumAngle + result;
+            }
         }
+
         return result;
     };
 
@@ -330,7 +345,11 @@
         this.onStop = options.onStop || options.onstop;
         this.onDragStop = options.onDragStop || options.ondragstop;
         this.onDragStart = options.onDragStart || options.ondragstart;
-        this.onMouseLeave = options.onMouseLeave || options.onMouseLeave;
+        this.onMouseLeave = options.onMouseLeave || options.onmouseleave || defaults.onMouseLeave;
+
+        this.behavior = options.behavior || defaults.behavior;
+        this.pendulumAngle = options.pendulumAngle || defaults.pendulumAngle;
+        this.pendulumOffset = options.pendulumOffset || defaults.pendulumOffset;
 
         this.step = options.step || defaults.step;
         this.stepTransitionTime = options.stepTransitionTime || defaults.stepTransitionTime;
@@ -402,6 +421,11 @@
     };
 
     p.updateCSS = function () {
+        if (this.behavior === "pendulum") {
+            this.element.style[Propeller.cssPrefix + 'transform-origin'] = '50% 0%';
+        } else {
+            this.element.style[Propeller.cssPrefix + 'transform-origin'] = '50% 50%';
+        }
         this.element.style[Propeller.cssPrefix + 'transform'] = 'rotate(' + this._angle + 'deg) ' + this.accelerationPostfix;
     };
 
